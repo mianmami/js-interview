@@ -1,17 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <style>
+    .layout-demo2{
+      display:flex;
+      flex-wrap: wrap;
+    }
+    [class$=face]{
+      margin: 16px;
+      padding: 4px;
+      background-color: #e7e7e7;
+      width: 104px;
+      height: 104px;
+      border-radius: 10%;
+      display: flex;
+      justify-content: space-between;
+      align-items: bottom;
+      
+    }
+    .pip{
+      display:block;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      margin: 4px;
+      background-color: #333;
+    }
+    .pip:nth-of-type(2){
+      /* align-self: flex-end; */
+    }
+
+
+  </style>
 </head>
+
 <body>
+ <div class="layout-demo2">
+  <div class="second-face">
+    <span class='pip'></span>
+    <span class='pip'></span>
+  </div>
+ </div>
   <script>
-    const arr = [1,2,4]
-    const res = arr.toString()
-    console.log(res); // "1,2,4" 逗号会保留
+
+    let arr = [3,3,4,7,5,5,6]
+    let mp = new Map();
+    arr.forEach(function(val){
+      if(mp.has(val)){mp.set(val, 2)}
+      else{mp.set(val, 1)}
+    })
     
+
+    for(let [key, value] of mp){
+      if(value == 1) console.log(key);
+    }
+    
+
+    
+
   </script>
 </body>
+
 </html>

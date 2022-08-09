@@ -1,5 +1,14 @@
+- [实现css三栏布局，中间固定，两边自适应](#实现css三栏布局中间固定两边自适应)
+- [双飞翼布局，还有一个啥布局来着](#双飞翼布局还有一个啥布局来着)
 - [谈谈对有关于常用的flex属性的方法](#谈谈对有关于常用的flex属性的方法)
 - [谈谈grid布局常用的属性](#谈谈grid布局常用的属性)
+- [居中的方式](#居中的方式)
+- [清除浮动的方式](#清除浮动的方式)
+
+# 实现css三栏布局，中间固定，两边自适应
+
+# 双飞翼布局，还有一个啥布局来着
+
 # 谈谈对有关于常用的flex属性的方法
 `flex-direction`: row/column/row-reverse/column-reverse<br>
 `flex-wrap`: wrap/no-wrap<br>
@@ -56,7 +65,27 @@ flex: 1: 表示 flex: 1 1 auto  自动扩充
   
   总结以下：flex和grid都是对一个容器内的元素进行布局，flex只有主轴和侧轴，grid则类似于栅格布局
  
+# 居中的方式
 
+`行内元素水平居中`: text-align: center
+
+`行内元素垂直居中`: line-height: 设置为和父元素高度一致即可
+
+`块级元素水平居中`: margin: 0 auto
+
+`块级垂直水平居中`: 
+
+  - 子绝父相 + left/top: 50% + marigin-left/margin-top: 元素本身宽高的一半(需要知道儿子的宽高)
+  - 子绝父相 + left/top: 50% + transform: translate(-50%)
+  - 子绝父相 + left/top/bottom/right: 0 + margin: auto
+  - 父元素不设置宽高，子元素通过padding撑开父元素
+  - 弹性盒布局:  display： flex + justity-content: center + align-items: center(这里，这里display: grid也是行的)
+
+# 清除浮动的方式
+- 父元素没有设置高度，子元素设置为浮动，导致父元素高度塌陷。所以最直接的方式是给父元素一个高度
+- 给父元素设置overflow: hidden/auto
+- 在原来的子元素下方再加入一个子元素，并设置clear: both。即清除左边的浮动元素，又清除右边的浮动元素
+- 现在比较常用的：原理和3是一样的，就是通过伪类元素，来虚拟地添加一个高度为0，内容为空的元素(最为推荐哦)
 
 
 

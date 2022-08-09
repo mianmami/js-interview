@@ -32,7 +32,3 @@ var MyLinkedList = function() {
 
 
 
-let t = "23424"
-let ttmp = t
-let ttmp = t.replace('2', '1')
-console.log(t);
