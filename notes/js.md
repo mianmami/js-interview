@@ -1,10 +1,14 @@
 - [js代码有问题，编译器是如何识别报错的](#js代码有问题编译器是如何识别报错的)
+- [js事件循环机制](#js事件循环机制)
 - [箭头函数和普通函数的区别](#箭头函数和普通函数的区别)
 - [Commonjs和es6模块的区别](#commonjs和es6模块的区别)
 - [实现深拷贝](#实现深拷贝)
 - [数据类型有哪些](#数据类型有哪些)
-- [typeof 能检测出哪些](#typeof-能检测出哪些)
-- [如何判断是否是数组](#如何判断是否是数组)
+- [instanceof如何实现](#instanceof如何实现)
+- [如何实现数组去重](#如何实现数组去重)
+- [js如何判断数据类型](#js如何判断数据类型)
+- [typeof 的用法](#typeof-的用法)
+- [ES6 set的底层实现原理](#es6-set的底层实现原理)
 - [构造函数中new在执行时都做了哪些事情？](#构造函数中new在执行时都做了哪些事情)
 - [this的指向问题，如何修改this的指向, 箭头函数能否实例化？](#this的指向问题如何修改this的指向-箭头函数能否实例化)
 - [讲一下E6类和继承](#讲一下e6类和继承)
@@ -20,8 +24,11 @@
 - [数组Api](#数组api)
 - [Map Api](#map-api)
 - [Set API](#set-api)
+- [ObjectAPi](#objectapi)
 
 # js代码有问题，编译器是如何识别报错的
+
+# js事件循环机制
 
 # 箭头函数和普通函数的区别
 
@@ -31,9 +38,61 @@
 
 # 数据类型有哪些
 
-# typeof 能检测出哪些
+# instanceof如何实现  
 
-# 如何判断是否是数组
+# 如何实现数组去重
+
+```js
+1. [...new set(arr)]
+
+2.利用indexof/includes
+let arr = [1,1,2,2];
+let res = [];
+for(let i=0; i<arr.length; i++) {
+  if(res.indexOf(arr[i])==-1){
+    res.push(arr[i])
+  }
+}
+console.log(res);
+
+3.利用排序+重复的数字是挨着的特点
+let arr = [1,2,2,4,4,5,2,1,3]
+arr.sort((a,b)=>a-b)
+let res = [];
+for(let i=0; i<arr.length; ++i){
+  if(arr[i-1]!=arr[i])
+  res.push(arr[i]) // arr[-1]=undefined
+}
+console.log(res);
+
+4.filter+index
+let arr = [3,2,3,3,2,2,5,5,1,1,1];
+let out = arr.filter(function(val,idx){
+  return arr.indexOf(val) == idx // 找到第一个就返回了他的索引
+})
+console.log(out);
+
+```
+
+# js如何判断数据类型
+[参考资料](https://blog.csdn.net/m0_61700036/article/details/122753556)
+
+# typeof 的用法
+[参考资料](https://blog.csdn.net/hong521520/article/details/106640616/)
+
+`为什么 typeof null == Object`
+
+因为js初始版本中，值以32位进行存储。前三位表示数据的类型，例如Number,String等。其他的作为值。Null一开始被认为是特殊值，对用着C语言的指针。但是js又没有指针，所以Null就意味着什么都没有，就以全0表示而000就是对象的标志，所以就有个这个结论。并一直沿用至今。
+
+# ES6 set的底层实现原理
+主要是利用对象，利用对象的key是唯一的特点，实现set中集合的唯一性，其中用到了对象的一些重要API：
+
+    1.obj.hasOwnProperty(xx):判断对象身上是否有某种属性
+    2.Object.keys() Object.values()
+    3.del Obj.item 删除某个属性值(会把属性一起删除了)
+Map的实现方式好像和set一样？
+
+[参考资料](https://github.com/XPoet/js-data-structures-and-algorithms/blob/master/assets/doc/08_JavaScript%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%EF%BC%88%E5%85%AB%EF%BC%89%E9%9B%86%E5%90%88.md)
 
 # 构造函数中new在执行时都做了哪些事情？
 
@@ -162,10 +221,22 @@ btn3.onclick = function
 
 # 如何判断一个数据是数组类型
 
-`Array.isArray(arr)`
+`1-Array.isArray(arr)`
 
-`arr instanceof Array/Object`
+`2-arr instanceof Array/Object`
   - instanceof 用于检测构造函数的 prototype 属性是否出现在某个实例对象的原型链上
+
+`3-arr.constructor.name == 'Array'` function的话是Function, 普通对象的话是Object,数字是Number等等，这样也是可以判断的
+
+`4-Object.prototype.toString.call(arr)=='object array'`
+  - 注意：数组身上也有个toString，这两个是不一样的, 这个是对象原型上的
+  - 传入普通obj -> '[object Object]'
+  - 传入数组 -> '[object Array]'
+  - 出入数字 -> '[object Number]'
+  - 传入字符串 -> '[object String]'等
+
+
+`typeof arr == 'object'` 注意：这个只能判断数据类型，并不能判断具体是不是数组
 
 # 闭包
 
@@ -241,6 +312,8 @@ JS的垃圾回收机制是为了以防内存泄漏，内存泄漏的含义就是
 - 定义的全局变量
 - 定义的闭包
 - dom清空或删除时，事件未清除导致的内存泄漏
+- 
+[参考资料](http://t.zoukankan.com/fightjianxian-p-11973234.html)
 
 # Object .is 和 == 和 === 有什么区别
 
@@ -558,7 +631,38 @@ setInterval(function(){
 },1000) // 过一段时间 wmap中的obj1键就被回收了,可以等待看一下结果
 ```
 
+# ObjectAPi
 
+`obj.hasOwnProperty`:只判断是否是自身的属性，是返回true, 继承过来的返回false
+
+
+
+`Object.create(prototype)` :必须要传入一个原理对象，表示继承自谁，例如Object.create(Array.prototype)
+
+
+
+
+
+`如何判断是不是对象`
+
+ - typeof XX == 'object'
+
+assign: ƒ assign()
+create: ƒ create()
+defineProperties: ƒ defineProperties()
+defineProperty: ƒ defineProperty()
+entries: ƒ entries()
+freeze: ƒ freeze()
+fromEntries: ƒ fromEntries()
+
+
+getPrototypeOf: ƒ getPrototypeOf()
+hasOwn: ƒ hasOwn()
+is: ƒ is()
+isExtensible: ƒ isExtensible()
+isFrozen: ƒ isFrozen()
+isSealed: ƒ isSealed()
+keys: ƒ keys()
 
 
 

@@ -5,8 +5,8 @@
 html页面中任何一个元素都可以叫做盒子，它规定了元素本身和元素之间的相互关系.盒模型由内到外可以分为：content,padding,border,margin.
 
 box-sizing有常用的两个属性
-  - border-box: width和height包含padding和border
-  - content-box: width和height就是内容content的宽高
+  - border-box: width和height包含padding和border, 设置了这个属性的盒模型也叫`ID盒模型`
+  - content-box: width和height就是内容content的宽高，设置了这个属性的盒模型也叫`标准盒模型`
 
 几个概念
   - 内容高度：content宽高

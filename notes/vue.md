@@ -3,34 +3,152 @@
 - [路由传参的几种方式](#路由传参的几种方式)
 - [什么是组件和模块](#什么是组件和模块)
 
-# vue双向绑定原理
-
-# vue数据响应原理
-
+# defineProperty的缺点 也是vue3 proxy监听的有点(等下再看)
 # vue2和vue3的区别
+# vue生命周期
 
-# 虚拟DOM的好处
+# 函数式组件比起class组件的优势是什么
+# Vue中是怎么实现订阅者的?Vue中观察者模式和发布/订阅模式的区别和场景  
 
-# diff算法的原理
+# Vue路径中的@是什么意思
+在Vue-cli中，@是src路径的别名。这样可以简化路径的写法，不用每次都从当前目录出发寻找某个文件.就不用一直写./  ../ 这种
+
+# 虚拟DOM的好处,diff算法的原理
+
+- diff算法是平级对比，一层一层，对应的位置和对应的位置
+- 它是深度优先去遍历  
+- 虚拟节点是一个对象{标签名，样式，子节点}
+- 然后利用differ算法，进行新旧DOM对比
+  - 如果新节点对应位置没有节点，就直接把原来的删除了
+  - 如果新节点对应位置有节点，且是文本节点，且文本不一样，那就对文本进行替换
+  - 如果新节点对应位置有节点，且是属性节点，那么就遍历属性节点的值，不一样就修改，没有的就添加进去
+  - 如果遇到了子节点，那就开始递归遍历
+  - 可以提一嘴：vue2用双指针遍历，vue3用最短子序列。。。。
 # vue中keep-alive
+
+- 有些页面可能经常要切换，所以不用经常创建和销毁，可以让他们驻留内存，加上了\<keep-alive>标签就可以了
+- 他有一个include属性，因为keep-alive包裹的组件，下面的所有子组件，都会缓存，但是我只想让某些缓存，就可以给include赋值一个数组，然后只保留需要缓存的组件
+- 针对组件的缓存，如果我想让组件切换的时候，进行一些操作，例如，把里面开的定时器关闭(不然，这个组件虽然没有展示，但是还在内存中，定时器就会一直开着，消耗资源)，vue提供了两个声明周期钩子，actived, deactived,就是在组件切换的时候，可以把逻辑写在这个里面
 # computed和watch的区别
-# defineProperty的缺点， 为什么数组的增加和删除会引起页面的更新
+
+- computed它的实现原理是基于Object.definePreperty,根据getter,和setter来进行值的改变，是计算属性。watch是监听一个值变化时对应的回调，可以拿到原来的值，和最新的值，可以设置immediate开启首次就执行，还可以通过deep开启深度监听
+- computed只会在页面首次加载的时候，和数据更新的时候执行一次，然后就把值缓存在了内存中。作为对比，通过methods方法，也可以返回计算属性的值，但是methods就得每次遇到计算属性，都要去调用，开销就变高了
+- computed必要要把新值return，所以她不能处理异步的问题。
+
+
+# 导航守卫
+  - 全局路由守卫 router.beforeEach/afterleave((to,next,from))
+  - 独享路由守卫 beforeEnter
+  - 组件内路由守卫 beforeRouterEnter/leave
+
+前置是需要达到条件，才能进入这个页面，后置是需要达到某个条件，才能离开这个页面(例如，点击了确认离开，再让你离开)
+
+[参考资料](https://www.bilibili.com/video/BV15V411U7oN?spm_id_from=333.337.search-card.all.click&vd_source=60248c7c7bc979b113e0ac4403b63220)
 
 # 为什么data要用函数
 
-# 导航守卫
+- 组件可以复用，但是data不用复用。不然，一个地方更改，其他地方的数据都要进行修改。耦合性太高了。然后可以扯一下深拷贝，浅拷贝，堆内存，栈内存
 
-# vue生命周期
+
 
 # css scoped样式穿透
+[参考资料](https://www.jb51.net/article/253428.htm)
 
-# 路由/图片懒加载
+# 图片懒加载
+
+图片不用一次性加载完毕，随着滚动条的拉动，慢慢地加载图片
+
+可以说自己学习Uniapp的时候，uniapp有内置指令 v-lazy
+
+基本的思路就是要监听滚动区域是否进入视野，如果进入了，就开始把url赋值给image.src即可，就会发起请求，去下载图片
+
+# vue数据响应原理
+
+- 拿到数据，利用Object.definePreperty进行get,seter设计，同时给每一个属性，都实例化对应的watch
+- 拿到模板，去解析里面的元素节点，文本节点。元素节点里识别@click,v-model等，绑定监听的事件（这样页面的数据可以流向data）。解析的时候把对应的watch保存在dep依赖里面数据更新的时候，dep回通知对应的watch进行页面的重新更新(data数据可以流向页面)(dep依赖，就是理解为data被哪些html标签所依赖了, add方法，notify方法)等
+- 由于Object.definePreperty不能给数组添加setter,getter，且只有初始化的数据能会自动添加getter和setter，所以才会有vue.$set()方法
+- 对于数组，VUE对原来的数据进行了封装，在保留了原来数组方法的基础上，添加了页面更新的操作，但仅限于pop push shift unshift reverse sort splice
+- 还要注意，this.$set只能给data里已经有的属性值里的内容，添加数据，不可以重新定义一个数据
+
+`这些可以回答Vue双向绑定，响应式原理，this.$set, 为什么数组的增加和删除可以引起页面的更新`
+```js
+let oldArrayProto = Array.prototype
+    
+let newArrayProto = Object.create(oldArrayProto)
+let arr = ['push', 'pop']
+arr.forEach(methodName => {
+  newArrayProto[methodName] = function () {
+    // 重新调用老原型的方法
+    oldArrayProto[methodName].call(this, ...arguments)
+    // 添加新原型功能，并视图的更新
+    console.log('我在更新视图');
+  }
+})
+
+// 测试
+let array = [1, 2, 3, 4]
+array.__proto__ = newArrayProto
+array.push(5)
+console.log(array);
+```
+
+[参考资料](https://www.bilibili.com/video/BV1Z7411d7mf?p=2&vd_source=60248c7c7bc979b113e0ac4403b63220)
+
+[参考资料](https://www.bilibili.com/video/BV1VA411x76D?p=4&vd_source=60248c7c7bc979b113e0ac4403b63220)
+
+
+
+
 
 # this.$set()使用场景
 
+```js
+	Vue监视数据的原理：
+  1. vue会监视data中所有层次的数据。（对象里套对象，都会被检测到）
+
+  2. 如何监测对象中的数据？
+          通过setter实现监视，且要在new Vue时就传入要监测的数据。
+            (1).对象中后追加的属性，Vue默认不做响应式处理
+            (2).如需给后添加的属性做响应式，请使用如下API：
+                    Vue.set(target，propertyName/index，value) 或 
+                    vm.$set(target，propertyName/index，value)
+
+  3. 如何监测数组中的数据？
+            通过包裹数组更新元素的方法实现，本质就是做了两件事：
+              (1).调用原生对应的方法对数组进行更新。
+              (2).重新解析模板，进而更新页面。
+            因为数组没有配置getter, setter方法，所以修改数组需要利用4中提到的方法。
+
+  4.在Vue修改数组中的某个元素一定要用如下方法：
+        1.使用这些API:push()、pop()、shift()、unshift()、splice()、sort()、reverse()
+        2.Vue.set() 或 vm.$set()
+
+        注意：4.1中提到的方法，都会对原数组进行改变。如果遇到filter, concat等不会引起数组改变的方法，可以通过暴力赋值的方法解决
+        this.student.hobby = this.student.hobby.filter((h)=>{
+          return h !== '抽烟'
+        })
+
+  
+  特别注意：Vue.set() 和 vm.$set() 不能给vm 或 vm的根数据对象(vm._data) 添加属性！！！，只能给它里面的Obj添加。
+        即可以直接：vm.gender = 'male'   不可以 Vue.set('vm', 'gender', 'male')
+```
+
+- 如果一开始对象上，没有属性
+
 # this.$nexttick使用场景 &nextTick作用，底层实现
 
+- Vue 在修改数据后，视图不会立刻更新，而是等同一事件循环中的所有数据变化完成之后，再统一进行视图更新。改数据是同步代码，带式视图的更新是异步的
+- 1 数据修改
+- 2.数据更新视图的watch进队(重复的不用进去)
+- 3.watch内部，也会调用Nexttick来进行promise封装
+- 4.遇到自己的nexttick
+- 5.watch的异步操作，在自己定义的Nexttick之前，所以就可以解决了
+
+[参考资料](https://www.bilibili.com/video/BV1ke4y1D7xv?spm_id_from=333.337.search-card.all.click&vd_source=60248c7c7bc979b113e0ac4403b63220)
+
 # push和replace区别 应该是路由切换那里的问题
+
+[参考资料](https://blog.csdn.net/qq_39364032/article/details/85774636)
 
 # 路由的模式有哪几种
 

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">
+    
+    <p>{{str}}</p>
+    <button @click="btn">点击输出</button><br>
+    <input type="text" v-model="str">
+  </div>
+  <script src="./Vue.js"></script>
+  <script>
+    let vm = new Vue({
+      el: '#app',
+      data:{
+        str: 300
+      },
+      methods:{
+        btn(e){
+          console.log(this.str);
+        }
+      }
+    })
+    console.log(vm);
+  </script>
+</body>
+
+</html>
