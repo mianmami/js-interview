@@ -7,44 +7,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-    }
-    .container{
-      display: flex;
-      /* justify-content: center; */ /* 这个可以不写 */ 
+    .box {
+      display: grid;
+      min-height: 100%;
+      grid-template-rows: auto 1fr auto;
     }
 
-    .center {
-      width: 300px;
-      height: 200px;
-      background-color: red;
-      
-    }
-
-    .left {
-      height: 200px;
-      background-color: skyblue;
-      flex:1;
-      
-    }
-
-    .right {
-      height: 200px;
-      background-color: skyblue;
-      flex:1
-      
+    .test {
+      position: sticky;
+      top: 100px;
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <div class="left"></div>
-    <div class="center"></div>
-    <div class="right"></div>
-  </div>
+  <script>
+    let arr = [1,2,3]
+    console.log(arr.valueOf());
+  </script>
 </body>
 
 </html>

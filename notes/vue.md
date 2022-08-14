@@ -1,14 +1,49 @@
+
+- [defineProperty的缺点 也是vue3 proxy监听的有点(等下再看)](#defineproperty的缺点-也是vue3-proxy监听的有点等下再看)
+- [vue2和vue3的区别](#vue2和vue3的区别)
+- [vue生命周期](#vue生命周期)
+- [函数式组件比起class组件的优势是什么](#函数式组件比起class组件的优势是什么)
+- [Vue中是怎么实现订阅者的?Vue中观察者模式和发布/订阅模式的区别和场景](#vue中是怎么实现订阅者的vue中观察者模式和发布订阅模式的区别和场景)
+- [怎样理解VUE中的单向数据流](#怎样理解vue中的单向数据流)
+- [vue父组件和子组件生命周期钩子的执行顺寻](#vue父组件和子组件生命周期钩子的执行顺寻)
+- [在哪个生命周期钩子里调用异步请求](#在哪个生命周期钩子里调用异步请求)
+- [vue3新特性](#vue3新特性)
+- [前端性能的优化](#前端性能的优化)
+- [Vue路径中的@是什么意思](#vue路径中的是什么意思)
+- [虚拟DOM的好处,diff算法的原理](#虚拟dom的好处diff算法的原理)
+- [vue中keep-alive](#vue中keep-alive)
+- [computed和watch的区别](#computed和watch的区别)
+- [导航守卫](#导航守卫)
+- [为什么data要用函数](#为什么data要用函数)
+- [css scoped样式穿透](#css-scoped样式穿透)
+- [图片懒加载](#图片懒加载)
+- [vue数据响应原理](#vue数据响应原理)
+- [this.$set()使用场景](#thisset使用场景)
+- [this.$nexttick使用场景 &nextTick作用，底层实现](#thisnexttick使用场景-nexttick作用底层实现)
+- [push和replace区别 应该是路由切换那里的问题](#push和replace区别-应该是路由切换那里的问题)
+- [路由的模式有哪几种](#路由的模式有哪几种)
+- [v-for中为什么要有key](#v-for中为什么要有key)
+- [为什么在vue的组件中，data要用function返回对象呢？](#为什么在vue的组件中data要用function返回对象呢)
+- [v-for和v-if为什么不能连用](#v-for和v-if为什么不能连用)
+- [route和router的区别](#route和router的区别)
+- [v-show和v-if区别](#v-show和v-if区别)
+- [路由懒加载](#路由懒加载)
 - [路由组件传值的几种方式](#路由组件传值的几种方式)
 - [简单说说对SPA单页面的理解，它的优缺点分别是什么](#简单说说对spa单页面的理解它的优缺点分别是什么)
 - [路由传参的几种方式](#路由传参的几种方式)
 - [什么是组件和模块](#什么是组件和模块)
-
 # defineProperty的缺点 也是vue3 proxy监听的有点(等下再看)
 # vue2和vue3的区别
 # vue生命周期
 
 # 函数式组件比起class组件的优势是什么
 # Vue中是怎么实现订阅者的?Vue中观察者模式和发布/订阅模式的区别和场景  
+
+# 怎样理解VUE中的单向数据流
+# vue父组件和子组件生命周期钩子的执行顺寻
+# 在哪个生命周期钩子里调用异步请求
+# vue3新特性
+# 前端性能的优化
 
 # Vue路径中的@是什么意思
 在Vue-cli中，@是src路径的别名。这样可以简化路径的写法，不用每次都从当前目录出发寻找某个文件.就不用一直写./  ../ 这种
@@ -45,6 +80,8 @@
 
 [参考资料](https://www.bilibili.com/video/BV15V411U7oN?spm_id_from=333.337.search-card.all.click&vd_source=60248c7c7bc979b113e0ac4403b63220)
 
+[参考资料](https://m.php.cn/article/486386.html)
+
 # 为什么data要用函数
 
 - 组件可以复用，但是data不用复用。不然，一个地方更改，其他地方的数据都要进行修改。耦合性太高了。然后可以扯一下深拷贝，浅拷贝，堆内存，栈内存
@@ -64,11 +101,13 @@
 
 # vue数据响应原理
 
-- 拿到数据，利用Object.definePreperty进行get,seter设计，同时给每一个属性，都实例化对应的watch
+- 拿到数据，利用Object.definePreperty进行get,seter设计(看一下这个是怎么用的，千万不要用自身调用自身)，同时给每一个属性，都实例化对应的watch
 - 拿到模板，去解析里面的元素节点，文本节点。元素节点里识别@click,v-model等，绑定监听的事件（这样页面的数据可以流向data）。解析的时候把对应的watch保存在dep依赖里面数据更新的时候，dep回通知对应的watch进行页面的重新更新(data数据可以流向页面)(dep依赖，就是理解为data被哪些html标签所依赖了, add方法，notify方法)等
 - 由于Object.definePreperty不能给数组添加setter,getter，且只有初始化的数据能会自动添加getter和setter，所以才会有vue.$set()方法
 - 对于数组，VUE对原来的数据进行了封装，在保留了原来数组方法的基础上，添加了页面更新的操作，但仅限于pop push shift unshift reverse sort splice
 - 还要注意，this.$set只能给data里已经有的属性值里的内容，添加数据，不可以重新定义一个数据
+- 为什么vue3要用Proxy取代Object.defineProperty，因为Object.defineProperty不能给数组添加get set(整个数组变化检测到，但是数组里的内容变化，检测不到)，即`监听不到数组的更新！！！！！`
+- ProxyIE9以下都不兼容，Object.definePropertyIE8以下都不兼容
 
 `这些可以回答Vue双向绑定，响应式原理，this.$set, 为什么数组的增加和删除可以引起页面的更新`
 ```js
@@ -154,7 +193,7 @@ console.log(array);
 
   [参考资料](https://blog.csdn.net/weixin_62930485/article/details/123491635)
   [参考资料](https://www.bilibili.com/video/BV1ba4y1s7Ra/?spm_id_from=333.788.recommend_more_video.-1&vd_source=60248c7c7bc979b113e0ac4403b63220)
-  如果选用了history模式，需要后端配置，全部都重定向到Index.html(我理解就是出现404错误，就都跳转回首页)
+  如果选用了history模式，需要后端配置，全部都重定向到Index.html(我理解就是出现404错误，就都跳转回首页) 这个可以回答`history模式中前后端是如何合作的`吗？？？
 
 
 # v-for中为什么要有key

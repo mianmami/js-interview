@@ -7,6 +7,7 @@
 - [谈谈grid布局常用的属性](#谈谈grid布局常用的属性)
 - [居中的方式](#居中的方式)
 - [清除浮动的方式](#清除浮动的方式)
+- [其他](#其他)
 
 
 # 1rem、1em、1vh、1px各自代表的含义？
@@ -122,15 +123,25 @@ flex: 1: 表示 flex: 1 1 auto  自动扩充
   - 子绝父相 + left/top: 50% + transform: translate(-50%)
   - 子绝父相 + left/top/bottom/right: 0 + margin: auto
   - 父元素不设置宽高，子元素通过padding撑开父元素
-  - 弹性盒布局:  display： flex + justity-content: center + align-items: center(这里，这里display: grid也是行的)
-
+  - 弹性盒布局:  display： flex + justity-content: center + align-items: center
+  - grid 布局： 父亲：display: grid  儿子： justify-self: center; align-self: center
 # 清除浮动的方式
 - 父元素没有设置高度，子元素设置为浮动，导致父元素高度塌陷。所以最直接的方式是给父元素一个高度
 - 给父元素设置overflow: hidden/auto
 - 在原来的子元素下方再加入一个子元素，并设置clear: both。即清除左边的浮动元素，又清除右边的浮动元素
 - 现在比较常用的：原理和3是一样的，就是通过伪类元素，来虚拟地添加一个高度为0，内容为空的元素(最为推荐哦)
 
+# 其他
 
+- 如果给float的元素添加margin-left: 那么会覆盖在左边的元素上
+- flex布局里的元素设置margin,如果空间不够的话，原来的元素会缩小
+- 父元素相对定位，子元素绝对定位，如果给给子元素设置Left:0,right:0,那么默认就是设置子元素的宽，可以通过调节left,right来设置子元素的宽度
+- 在定位元素中，父元素的z-index小于兄弟元素的z-index时候，父元素中子元素的z-index再高，也不会覆盖父元素的兄弟元素
+- 给padding设置百分比的时候，相对的是包含块的宽度，而不是高度
+- 隐藏文本：font-size: 0px;
+- 对于图片的设置：object-fit: contain（包含图片） cover（保持宽高比）
+- filter: blur(1.5px) 虚化，看起来像毛玻璃
+- [postoin:sticky的使用方法](https://www.jb51.net/css/716126.html)
 
 
 

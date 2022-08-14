@@ -1,11 +1,22 @@
 - [js代码有问题，编译器是如何识别报错的](#js代码有问题编译器是如何识别报错的)
+- [sTRING类型的API](#string类型的api)
+- [NumberAPI](#numberapi)
 - [js事件循环机制](#js事件循环机制)
 - [箭头函数和普通函数的区别](#箭头函数和普通函数的区别)
 - [Commonjs和es6模块的区别](#commonjs和es6模块的区别)
-- [实现深拷贝](#实现深拷贝)
+- [如何创建一个m*n的二维数组(用一行代码，全部用0填充)](#如何创建一个mn的二维数组用一行代码全部用0填充)
+- [函数的rest参数](#函数的rest参数)
+- [对象的解构赋值](#对象的解构赋值)
+- [Proxy 和 Object.defineProperty的区别](#proxy-和-objectdefineproperty的区别)
+- [什么是Reflect](#什么是reflect)
+- [字符串模板](#字符串模板)
+- [使用ES6设计一个计数器](#使用es6设计一个计数器)
+- [一句话找到数据的最大值](#一句话找到数据的最大值)
 - [数据类型有哪些](#数据类型有哪些)
+- [实现深拷贝](#实现深拷贝)
 - [instanceof如何实现](#instanceof如何实现)
 - [如何实现数组去重](#如何实现数组去重)
+- [js中哪些数据是false](#js中哪些数据是false)
 - [js如何判断数据类型](#js如何判断数据类型)
 - [typeof 的用法](#typeof-的用法)
 - [ES6 set的底层实现原理](#es6-set的底层实现原理)
@@ -15,6 +26,7 @@
 - [js原生的绑定点击事件](#js原生的绑定点击事件)
 - [Generator/Iterator/Async/Await](#generatoriteratorasyncawait)
 - [原型链](#原型链)
+- [AMD和CMD](#amd和cmd)
 - [如何判断一个数据是数组类型](#如何判断一个数据是数组类型)
 - [闭包](#闭包)
 - [let const var区别](#let-const-var区别)
@@ -25,21 +37,146 @@
 - [Map Api](#map-api)
 - [Set API](#set-api)
 - [ObjectAPi](#objectapi)
+- [NumberAPI](#numberapi-1)
+- [SymbolAPI](#symbolapi)
+- [字符串API](#字符串api)
 
 # js代码有问题，编译器是如何识别报错的
+
+# sTRING类型的API
+# NumberAPI
 
 # js事件循环机制
 
 # 箭头函数和普通函数的区别
 
+
+
 # Commonjs和es6模块的区别
+
+[参考资料](https://blog.csdn.net/xieanna123/article/details/110952381)
+[循环引用](https://wenku.baidu.com/view/070cbd8b0329bd64783e0912a216147916117e56.html)
+
+# 如何创建一个m*n的二维数组(用一行代码，全部用0填充)
+console.log(new Array(3).fill(0).map(val=>new Array(7).fill(0)))
+
+# 函数的rest参数
+```js
+function func(...arr){
+  console.log(arr)
+}
+func(1,2,3) // [1,2,3]
+ 
+function func1(a , ...arr){
+  console.log(a , arr)
+}
+func(1,2,3) // 1 , [2,3]
+```
+
+# 对象的解构赋值
+```js
+let obj = {
+  name: 'huang',
+  age: 18
+}
+let {name:name1, age:age1} = obj
+console.log(name1, age1);
+```
+
+
+# Proxy 和 Object.defineProperty的区别
+
+[参考资料](https://blog.csdn.net/weixin_43443341/article/details/124041094)
+
+# 什么是Reflect
+
+[参考资料](https://wangdoc.com/es6/reflect.html)
+# 字符串模板
+```js
+`${变量名字}` 
+```
+
+# 使用ES6设计一个计数器
+
+```js
+function accountTool(){
+  let i = 0;
+  return function * add(){
+    yield i++
+    add()
+  }
+}
+
+let sum = accountTool();
+console.log(sum().next().value);
+console.log(sum().next().value);
+console.log(sum().next().value);
+```
+
+# 一句话找到数据的最大值
+
+Math.max(...arr)
+# 数据类型有哪些
+
+[参考资料](https://www.bilibili.com/read/cv16752509/)
 
 # 实现深拷贝
 
-# 数据类型有哪些
+```js
+function depCopy(target, source){
+  for(let key in source){
+    let subSource = source[key];
+    if(subSource instanceof Object){
+      let subTarget = new subSource.constructor;
+      target[key] = subTarget;
+      depCopy(subTarget, subSource)
+    }else{
+      target[key]=subSource
+    }
+  }
+}
 
-# instanceof如何实现  
+let target = {}
+depCopy(target, obj)
+console.log(target);
 
+// 还有一种写法
+function deepClone(obj) {
+      let objClone = Array.isArray(obj) ? [] : {};
+      if (obj && typeof obj === "object") {
+        for (key in obj) {
+          if (obj.hasOwnProperty(key)) {
+
+            if (obj[key] && typeof obj[key] === "object") {
+              objClone[key] = deepClone(obj[key]);
+            } else {
+
+              objClone[key] = obj[key];
+            }
+          }
+        }
+      }
+      return objClone;
+    }
+```
+
+[数组的深拷贝实现方式](https://blog.csdn.net/czx3387170/article/details/104427054)
+- 拓展运算符
+- slice
+- concat
+
+# instanceof如何实现 
+
+```js
+function MyInstanceof(insObj,consObj){
+  while(insObj.__proto__){
+    if(insObj.__proto__ == consObj.prototype) return true
+    insObj = insObj.__proto__
+  }
+  return false
+}
+```
+[参考资料](https://blog.csdn.net/Yi2008yi/article/details/124102143)
 # 如何实现数组去重
 
 ```js
@@ -73,12 +210,15 @@ let out = arr.filter(function(val,idx){
 console.log(out);
 
 ```
-
+# js中哪些数据是false
+undefined null NaN false +0 -0
 # js如何判断数据类型
 [参考资料](https://blog.csdn.net/m0_61700036/article/details/122753556)
 
 # typeof 的用法
 [参考资料](https://blog.csdn.net/hong521520/article/details/106640616/)
+
+[和instanceof的区别](https://m.php.cn/article/463654.html)
 
 `为什么 typeof null == Object`
 
@@ -164,9 +304,9 @@ test.bind(obj, 1, 2)() // test内部的this此时就指向obj, 输出obj, 1, 2�
 test.call(obj, 1, 2) // obj, 1, 2
 test.apply(obj, [1, 2]) // obj, 1, 2
 ```
+4.箭头函数内部使用的话
 
-
-`注意：箭头函数不能实例化，因为箭头函数没有自己的this`
+`注意：箭头函数不能实例化，因为箭头函数没有自己的this，它内部的this跟随它的父级作用域中的this`
 
 # 讲一下E6类和继承
 ```js
@@ -198,7 +338,7 @@ class Student extends Person{
 let stu = new Student('zhang', 19)
 console.log(stu); 
 // 父元素实例属性+方法，子元素都可以访问，而原型方法则通过原型链访问
-// 通过super()对父元素的属性进行修改
+// 通过super()对父元素的属性进行修改（如果父元素有需要参数的，没有的话，constructor也可以不写, 写了constructor，那么一定要写super）
 // 同名的方法，会对父元素进行重写(也可以理解为覆盖？？)
 ```
 
@@ -214,10 +354,22 @@ btn3.onclick = function
 # Generator/Iterator/Async/Await
 [参考个人笔记](https://blog.csdn.net/mianmami/article/details/126203755?csdn_share_tail=%7B%22type%22%3A%22blog%22%2C%22rType%22%3A%22article%22%2C%22rId%22%3A%22126203755%22%2C%22source%22%3A%22mianmami%22%7D&ctrtid=4A0mP)
 
+原生具备 Iterator 接口的数据结构如下。
+ - Array, String, map, set, string 
+ - 普通对象配置Symbol.iterator没用，类数组对象配置Symbol.iterator可以用let...of...访问
+
 # 原型链
 ![image](../images/00008.png)
 
 注意：Array这些构造函数，都是由Function函数的实例化对象！！！！
+
+# AMD和CMD
+
+插件加载方式
+
+AMD就是一上来就把我需要的插件都下载下来
+
+CMD就是当我用到哪个插件，就下载哪个插件
 
 # 如何判断一个数据是数组类型
 
@@ -288,6 +440,7 @@ console.log(i);  // 5 0 1 2 3 4
 - var可以重复定义，let不可以重复定义, const不可以重复定义，const赋值一个常量，一旦被赋值，这个数据不可以改变(对象的话，内容在改变，但是内存地址并没有变化)
 - var关键字可以进行变量声明提升，即可以先使用，后定义。例如var a = 1, 等同于 var a; a = 1。let/const不可以进行声明提升
 - 全局、局部、块级作用域。在块级{}作用域中，let/const定义的变量是独享的,var定义的变量还是全局变量。这个应用在for循环里很明显，var i = 1， 然后里面有异步操作会报错哦(不是你想要的结果)！！！`参考闭包的内容`
+- 通过var定义的变量会挂在到全局变量，let const不会
 
 # 深拷贝和浅拷贝
 [参考资料](https://www.jb51.net/article/192518.htm)
@@ -434,7 +587,34 @@ fruits.splice(1,2) // 表示删除从序号为1开始(包括1)，删除往后的
 let arr = [1,2,3,4,5]
 let res = arr.reduce((sum, cur)=> sum += cur, 0)
 console.log(res); // 15
+
 ```
+`Array.from()`
+
+- 转换伪数组对象或者是可迭代对象
+
+```JS
+//Array.from(obj) 是浅拷贝
+const obj = [1,2,3,[4,5,6]]
+let obj1 = Array.from(obj)
+obj[3][0] = 7
+obj[1] = 999
+// 修改obj [4,5,7]中的内容，发现obj1中的内容也更改了。所以是浅拷贝
+// 修改obj 中 1 -> 999，但是obj1中还是为1，所以这个是深拷贝
+console.log(obj1);
+// false  
+// 如果是浅拷贝，那么obj == obj1才对，我理解的是[4,5,6]可能是浅拷贝，但是1 2 3 是深拷贝，所以造成了最后obj != obj1
+// 但是其中有浅拷贝的存在，所以就归纳为浅拷贝了？？？(我目前这么理解)
+console.log(obj1 == obj); 
+```
+[参考资料](https://blog.csdn.net/yangaoyuan1999/article/details/119993661)
+
+`Array.flat() Array.flatMap()`
+
+- 注意：falt可以控制打平的深度，但是flatMap只能打平一层
+
+
+
 `Array.some(fn)`
 
 只要有一个元素满足条件，就返回true, 否则返回false
@@ -639,9 +819,86 @@ setInterval(function(){
 
 `Object.create(prototype)` :必须要传入一个原理对象，表示继承自谁，例如Object.create(Array.prototype)
 
+`Object.is()`
+
+
+ES5 比较两个值是否相等，只有两个运算符：相等运算符（==）和严格相等运算符（===）。它们都有缺点，前者会自动转换数据类型，后者的NaN不等于自身，以及+0等于-0。JavaScript 缺乏一种运算，在所有环境中，只要两个值是一样的，它们就应该相等。
+```js
+Object.is('foo', 'foo')// true
+Object.is({}, {}) // false
+Object.is(+0, -0) // false
+Object.is(NaN, NaN) // true
+```
+`Object.keys() Object.values() Objext.entries() Object.fromEntries()`
+```js
+Object.fromEntries([
+  ['foo', 'bar'],
+  ['baz', 42]
+])
+```
+`Object.assign`
+
+Object.assign()方法用于对象的合并，将源对象（source）的所有可枚举属性，复制到目标对象（target）。Object.assign()方法的第一个参数是目标对象，后面的参数都是源对象。
+```js
+const target = { a: 1 };
+const source1 = { b: 2 };
+const source2 = { c: 3 };
+Object.assign(target, source1, source2);
+target // {a:1, b:2, c:3}
+```
+注意，如果目标对象与源对象有同名属性，或多个源对象有同名属性，则后面的属性会覆盖前面的属性。
+```js
+const target = { a: 1, b: 1 };
+
+const source1 = { b: 2, c: 2 };
+const source2 = { c: 3 };
+
+Object.assign(target, source1, source2);
+target // {a:1, b:2, c:3}
+```
+如果只有一个参数，Object.assign()会直接返回该参数。
+```js
+const obj = {a: 1};
+Object.assign(obj) === obj // true
+```
+由于undefined和null无法转成对象，所以如果它们作为参数，就会报错。
+```js
+Object.assign(undefined) // 报错
+Object.assign(null) // 报错
+```
+Object.assign()可以用来处理数组，但是会把数组视为对象。
+```js
+Object.assign([1, 2, 3], [4, 5])
+// [4, 5, 3]
+```
+Object.assign()只能进行值的复制，如果要复制的值是一个取值函数，那么将求值后再复制。
+```js
+const source = {
+  get foo() { return 1 }
+};
+const target = {};
+
+Object.assign(target, source)
+// { foo: 1 }
+```
 
 
 
+- Object.assign是深拷贝还是浅拷贝
+  
+```js
+// 总结：如果对应的属性是非对象，那么是深拷贝
+// 如果对象的属性值是对象，那么是浅拷贝(是引用，是地址，会同时变化)
+let target = {};
+let source1 = {a:1, b:2, d:5};
+let source2 = {a:{name:'huang'}, b:3, c:4};
+Object.assign(target, source1, source2);
+console.log(target);  //{ a: { name: 'huang' }, b: 3, d: 5, c: 4 }
+target.a.name = 'zhang';
+target.b = 100;
+console.log(source1, source2); // { a: 1, b: 2, d: 5 } { a: { name: 'zhang' }, b: 3, c: 4 }
+
+```
 
 `如何判断是不是对象`
 
@@ -664,6 +921,108 @@ isFrozen: ƒ isFrozen()
 isSealed: ƒ isSealed()
 keys: ƒ keys()
 
+# NumberAPI
+
+`Number.isFinite` 判断是否是有限的
+
+`Number.isNaN`: 单反有NaN参与的预算，都是NaN,还有一些不合法的运算，例如： 1 / 0 也会返回true(也是NaN)
+
+`Number.isInteger()`判断是否是整数 注意：Number.isInteger(15.0)返回true
+
+`Number.trunc()`  去除小数部分，返回整数部分 Math.trunc(4.0) => 4
+
+```js
+console.log(Math.sign(-5)) // -1
+console.log(Math.sign(5))// +1
+console.log(Math.sign(0))// +0
+console.log(Math.sign(-0)) // -0
+console.log(Math.sign(NaN))// NaN  
+```
+# SymbolAPI
+ES5 的对象属性名都是字符串，这容易造成属性名的冲突。比如，你使用了一个他人提供的对象，但又想为这个对象添加新的方法（mixin 模式），新方法的名字就有可能与现有方法产生冲突。如果有一种机制，保证每个属性的名字都是独一无二的就好了，这样就从根本上防止属性名的冲突。这就是 ES6 引入Symbol的原因。
+
+Symbol 值通过<span style="color:red">Symbol()函数(可否理解为构造函数？？)</span>生成。这就是说，对象的属性名现在可以有两种类型，一种是原来就有的字符串，另一种就是新增的 Symbol 类型。凡是属性名属于 Symbol 类型，就都是独一无二的，可以保证不会与其他属性名产生冲突。
+
+因为Symbol生成的是一个原始值类型，并不是对象。所以不能用New命令，否则会报错。
+```js
+let s = Symbol();
+typeof s // // "symbol"
+
+```
+Symbol函数可以接收字符串，作为对Symbol实例的描述.但是注意：每一个symbol都是不一样的。即使是传递了相同的参数
+```js
+let s1 = Symbol('foo');
+let s2 = Symbol('bar');
+
+s1 // Symbol(foo)
+s2 // Symbol(bar)
+
+// 没有参数的情况
+let s1 = Symbol();
+let s2 = Symbol();
+
+s1 === s2 // false
+
+// 有参数的情况
+let s1 = Symbol('foo');
+let s2 = Symbol('foo');
+
+s1 === s2 // false
+```
+
+`Symbol.prototype.description`
+ES2019 提供了一个实例属性description，直接返回 Symbol 的描述。
+```js
+const sym = Symbol('foo');
+sym.description // "foo"
+```
+`Symbol用作属性名(要加中括号)`
+由于每一个 Symbol 值都是不相等的，这意味着 Symbol 值可以作为标识符，用于对象的属性名，就能保证不会出现同名的属性。这对于一个对象由多个模块构成的情况非常有用，能防止某一个键被不小心改写或覆盖。
+
+但是，因为symbol和字符串非常类似，所以需要用[]来表示。且属性不需要加上引号
+
+```js
+let sym = Symbol();
+
+// 第一种写法
+let a = {};
+a[sym] = 'hello' // 注意不能用a.sym， 这样sym会被认为是字符串
+
+// 第二种写法
+let a = {
+  [sym]:"hello"
+}
+
+// 第三种写法
+let a = {};
+Object.defineProperty(a, sym, {
+  value: "hello"
+})
+```
+
+`Symbol.iterator`
+对象的Symbol.iterator属性，指向该对象的默认遍历器方法。
+
+`Symbol.for Symbol.keyFor() `
+Symbol.for()与Symbol()这两种写法，都会生成新的 Symbol。它们的区别是，前者会被登记在全局环境中供搜索，后者不会。Symbol.for()不会每次调用就返回一个新的 Symbol 类型的值，而是会先检查给定的key是否已经存在，如果不存在才会新建一个值。比如，如果你调用Symbol.for("cat")30 次，每次都会返回同一个 Symbol 值，但是调用Symbol("cat")30 次，会返回 30 个不同的 Symbol 值。
+
+简而言之：Symbol.for() 结果被登记到全局,有就直接引用，没有就重新创建，而Symbol()每次都是重新创建。
+```js
+Symbol.for("bar") === Symbol.for("bar")
+// true
+
+Symbol("bar") === Symbol("bar")
+// false
+```
+Symbol.keyFor()方法返回一个已登记的 Symbol 类型值的key。
+```js
+let sym = Symbol.for("AAAA");
+console.log(Symbol.keyFor(sym)); // AAAA 注意：找的也是注册在全局的symbol
+```
+
+# 字符串API
+
+`padStart padEnd` : [参考资料](https://blog.csdn.net/qq_37548296/article/details/107259899)
 
 
 
