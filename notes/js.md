@@ -1,6 +1,4 @@
 - [js代码有问题，编译器是如何识别报错的](#js代码有问题编译器是如何识别报错的)
-- [sTRING类型的API](#string类型的api)
-- [NumberAPI](#numberapi)
 - [js事件循环机制](#js事件循环机制)
 - [箭头函数和普通函数的区别](#箭头函数和普通函数的区别)
 - [Commonjs和es6模块的区别](#commonjs和es6模块的区别)
@@ -37,19 +35,34 @@
 - [Map Api](#map-api)
 - [Set API](#set-api)
 - [ObjectAPi](#objectapi)
-- [NumberAPI](#numberapi-1)
+- [NumberAPI](#numberapi)
 - [SymbolAPI](#symbolapi)
 - [字符串API](#字符串api)
 
 # js代码有问题，编译器是如何识别报错的
 
-# sTRING类型的API
-# NumberAPI
+  [这个好像不算是答案，但是能帮我看一下如何处理异常](https://juejin.cn/post/6862225202332794894)
 
 # js事件循环机制
+- 注意settimeout如果延迟事件写0，不是马上执行，其默认延迟时间是4ms,且，只有主线程空闲，它才能调用，如果主线程一直阻塞，那么它可能永远停滞
+
+[参考资料](https://blog.csdn.net/CherryCola_zjl/article/details/112007310?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-112007310-blog-125029860.pc_relevant_multi_platform_whitelistv4eslandingctr2&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-112007310-blog-125029860.pc_relevant_multi_platform_whitelistv4eslandingctr2&utm_relevant_index=1)
+
+[参考资料](https://www.jianshu.com/p/334b0e40b4dd)
+
+```js
+// 题目1
+new Promise((resolve, reject) => {
+  console.log('1'); // promise.then才是微任务   
+})
+console.log('2');
+
+
+```
+
 
 # 箭头函数和普通函数的区别
-
+[参考资料](https://blog.csdn.net/yzkdcsdn/article/details/121294954)
 
 
 # Commonjs和es6模块的区别
@@ -88,9 +101,16 @@ console.log(name1, age1);
 
 [参考资料](https://blog.csdn.net/weixin_43443341/article/details/124041094)
 
+
+
+- Proxy目前是支持IE9及上，defiproperty还支持IE8及以上
+- Proxy静态方法有13中，功能要比defineProperty更加强大
+
 # 什么是Reflect
 
 [参考资料](https://wangdoc.com/es6/reflect.html)
+
+[先读一下这个](https://blog.csdn.net/qq_39852145/article/details/114240895)
 # 字符串模板
 ```js
 `${变量名字}` 
@@ -103,7 +123,7 @@ function accountTool(){
   let i = 0;
   return function * add(){
     yield i++
-    add()
+    add() // 這裏可以刪掉
   }
 }
 
@@ -115,7 +135,7 @@ console.log(sum().next().value);
 
 # 一句话找到数据的最大值
 
-Math.max(...arr)
+Math.max(...arr) 如果有多个值，写成 Math.max(1,2,3,4,5,6)
 # 数据类型有哪些
 
 [参考资料](https://www.bilibili.com/read/cv16752509/)
@@ -220,9 +240,16 @@ undefined null NaN false +0 -0
 
 [和instanceof的区别](https://m.php.cn/article/463654.html)
 
-`为什么 typeof null == Object`
+`为什么 typeof null == 'Object'`
+
 
 因为js初始版本中，值以32位进行存储。前三位表示数据的类型，例如Number,String等。其他的作为值。Null一开始被认为是特殊值，对用着C语言的指针。但是js又没有指针，所以Null就意味着什么都没有，就以全0表示而000就是对象的标志，所以就有个这个结论。并一直沿用至今。
+
+`typeof NaN == 'number'`
+
+`typeof undefined = 'undefined'`
+
+`typeof Symbel = 'symbol`
 
 # ES6 set的底层实现原理
 主要是利用对象，利用对象的key是唯一的特点，实现set中集合的唯一性，其中用到了对象的一些重要API：
@@ -240,6 +267,8 @@ Map的实现方式好像和set一样？
 - 将函数中的this指向这个对象
 - 为对象添加具体的属性和方法
 - return 这个对象 
+
+[这个写的更加完善](https://blog.csdn.net/m0_52714582/article/details/112497063)
   
 ```js
 function Person(name, age){
@@ -1024,7 +1053,11 @@ console.log(Symbol.keyFor(sym)); // AAAA 注意：找的也是注册在全局的
 
 `padStart padEnd` : [参考资料](https://blog.csdn.net/qq_37548296/article/details/107259899)
 
+`数字字母的转换`:
 
+console.log('a'.charCodeAt());
+
+console.log(String.fromCharCode(97));
 
 
 

@@ -22,8 +22,31 @@
 
 <body>
   <script>
-    let arr = [1,2,3]
-    console.log(arr.valueOf());
+    var fourSumCount = function (nums1, nums2, nums3, nums4) {
+      let cnt = 0;
+      nums3.sort((a, b) => a - b)
+      nums4.sort((a, b) => a - b)
+      for (let i = 0; i < nums1.length; ++i) {
+        for (let j = 0; j < nums2.length; ++j) {
+
+          let left = 0;
+          let right = nums3.length - 1;
+          while (left < nums3.length && right >= 0) {
+            if (nums1[i] + nums2[j] + nums3[left] + nums4[right] == 0) {
+              cnt++
+            } else if (nums1[i] + nums2[j] + nums3[left] + nums4[right] < 0) {
+              left++
+            } else {
+              right--
+            }
+          }
+        }
+      }
+      return cnt
+    };
+
+    console.log(fourSumCount([1, 2], [-2, -1], [-1, 2], [0, 2]));
+
   </script>
 </body>
 
