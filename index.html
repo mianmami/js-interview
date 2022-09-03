@@ -6,48 +6,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <style>
-    .box {
-      display: grid;
-      min-height: 100%;
-      grid-template-rows: auto 1fr auto;
-    }
-
-    .test {
-      position: sticky;
-      top: 100px;
-    }
-  </style>
 </head>
 
 <body>
   <script>
-    var fourSumCount = function (nums1, nums2, nums3, nums4) {
-      let cnt = 0;
-      nums3.sort((a, b) => a - b)
-      nums4.sort((a, b) => a - b)
-      for (let i = 0; i < nums1.length; ++i) {
-        for (let j = 0; j < nums2.length; ++j) {
+    
+   // 关键点在于：本来是fn() 现在把fn挂载到了obj上，变成obj.fn.bind，就指向了obj
 
-          let left = 0;
-          let right = nums3.length - 1;
-          while (left < nums3.length && right >= 0) {
-            if (nums1[i] + nums2[j] + nums3[left] + nums4[right] == 0) {
-              cnt++
-            } else if (nums1[i] + nums2[j] + nums3[left] + nums4[right] < 0) {
-              left++
-            } else {
-              right--
-            }
-          }
-        }
-      }
-      return cnt
-    };
+    
+    
+    
 
-    console.log(fourSumCount([1, 2], [-2, -1], [-1, 2], [0, 2]));
 
   </script>
+
 </body>
 
 </html>

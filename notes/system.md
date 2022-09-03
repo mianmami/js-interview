@@ -1,11 +1,14 @@
-- [浏览器缓存](#浏览器缓存)
-- [http缓存    强缓存、协商缓存](#http缓存----强缓存协商缓存)
 - [浏览器原理](#浏览器原理)
 - [重绘重排](#重绘重排)
 - [浏览器渲染页面的流程](#浏览器渲染页面的流程)
+- [url输入到页面发生了什么？](#url输入到页面发生了什么)
+- [DNS解析](#dns解析)
+- [TCP和UDP](#tcp和udp)
+- [HTTP和HTTPs](#http和https)
+- [http缓存(强缓存、协商缓存)](#http缓存强缓存协商缓存)
+- [状态码](#状态码)
 - [什么是CSRF XSS](#什么是csrf-xss)
-- [TCP UDP](#tcp-udp)
-- [http和https](#http和https)
+- [http和https](#http和https-1)
 - [HTTP协议](#http协议)
 - [什么是跨域，如何解决跨域问题](#什么是跨域如何解决跨域问题)
 - [ajax, fetch, axios的区别](#ajax-fetch-axios的区别)
@@ -20,13 +23,55 @@
 
 
 
-# 浏览器缓存
-# http缓存    强缓存、协商缓存
+
+ 
 
 # 浏览器原理
 
 # 重绘重排
 # 浏览器渲染页面的流程
+
+# url输入到页面发生了什么？
+![image](../images/00014.png)
+
+# DNS解析
+![image](../images/00015.png)
+
+客户端首先会查看是否有本地域名服务器(可以理解为网络运营商服务器)中是否存在dns的缓存，如果有，直接查表得到对应的IP地址。如果没有，然后就通过本地域名服务器进行后续的查询(根服务器，顶级域名服务器，权限服务器)，根服务器就是一个.，例如www.baidu.com.  .com是顶级域名，.是根域名。查询的方式可以分为迭代查询和递归查询，由请求报文来进行设置。
+
+[参考资料](https://blog.csdn.net/qq_30154571/article/details/122027505)
+
+# TCP和UDP
+
+[参考资料](https://blog.csdn.net/ymb615ymb/article/details/123449588)
+
+# HTTP和HTTPs
+
+
+
+
+
+# http缓存(强缓存、协商缓存)
+
+强缓存：设置expires和cache-control, 浏览器端自己会判断
+
+协商缓存：服务端设置的时候 last-modified(根据修改的时间) etag(根据内容是否发生修改,会根据生成一个唯一的hash)，接收到客户端请求信息的时候，根据if-modeified-since,  if-none-match来进行判断
+
+[参考资料](https://blog.csdn.net/m0_63657524/article/details/125966386)
+
+[参考资料](https://blog.csdn.net/weixin_44730897/article/details/110228250)
+
+[参考资料](https://blog.csdn.net/qq_37857224/article/details/119751569?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-0-119751569-blog-110228250.pc_relevant_multi_platform_featuressortv2dupreplace&spm=1001.2101.3001.4242.1&utm_relevant_index=3)
+
+
+
+# 状态码
+- 301： 永久重定向
+- 302： 临时重定向
+- 304： not modified,资源未更改，可以继续使用客户端未过期的缓存(`协商缓存生效`)
+- 400： bad request 请求的报文中有语法错误(例如json格式错误等等)
+- 405： method not allow: 请求的方式和后台给的不同
+
 
 # 什么是CSRF XSS
 服务端只是保存了session状态，但是不知道是黑客触发的，还是用户触发的。
@@ -43,20 +88,22 @@
 
 `http-only` : [参考资料](https://www.jianshu.com/p/42abd108d1d1) 可以应对xss跨站攻击
 
-# TCP UDP
 
-[参考资料](https://m.php.cn/faq/463414.html)
 
 # http和https
 
 HTTP 与 HTTPS 区别
 - HTTP 明文传输，数据都是未加密的，安全性较差，HTTPS（SSL+HTTP） 数据传输过程是加密的，安全性较好。
 - 使用 HTTPS 协议需要到 CA（Certificate Authority，数字证书认证机构） 申请证书，一般免费证书较少，因而需要一定费用。证书颁发机构如：Symantec、Comodo、GoDaddy 和 GlobalSign 等。
-- HTTP 页面响应速度比 HTTPS 快，主要是因为 HTTP 使用 TCP 三次握手建立连接，客户端和服务器需要交换 3 个包，而 HTTPS除了 TCP 的三个包，还要加上 ssl 握手需要的 9 个包，所以一共是 12 个包。
+- HTTP 页面响应速度比 HTTPS 快，主要是因为 HTTP 使用 TCP 三次握手建立连接，客户端和服务器需要交换 3 个包，而 HTTPS除了 TCP 的三个包，还要加上 ssl 握手(SSL数字证书)需要的 9 个包，所以一共是 12 个包。
 - http 和 https 使用的是完全不同的连接方式，用的端口也不一样，前者是 80，后者是 443。
 - HTTPS 其实就是建构在 SSL/TLS 之上的 HTTP 协议，所以，要比较 HTTPS 比 HTTP 要更耗费服务器资源。
 
 `如何克服HTTP是无状态协议的缺陷`：通过cookie或者会话保存信息
+
+[https如何加密](https://blog.csdn.net/qq_41885673/article/details/123431843)
+[https如何加密](https://blog.csdn.net/weixin_49830664/article/details/122527783?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-122527783-blog-123431843.pc_relevant_multi_platform_featuressortv2removedup&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-122527783-blog-123431843.pc_relevant_multi_platform_featuressortv2removedup&utm_relevant_index=1)
+
 
 `http各个版本的区别` [参考资料](https://blog.csdn.net/ailunlee/article/details/97831912)
 

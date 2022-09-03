@@ -371,6 +371,7 @@ console.log(stu);
 // 同名的方法，会对父元素进行重写(也可以理解为覆盖？？)
 ```
 
+
 # js原生的绑定点击事件
 
 ```md
@@ -1058,6 +1059,10 @@ console.log(Symbol.keyFor(sym)); // AAAA 注意：找的也是注册在全局的
 console.log('a'.charCodeAt());
 
 console.log(String.fromCharCode(97));
+
+`str.replace str.replaceAll` 
+
+str.replace只替换一个，且不改变原来的str, 会返回一个最新的结果，如果要全部替换，可以用str.replaceALL
 
 
 
