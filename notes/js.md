@@ -527,6 +527,62 @@ console.log(stu);
 ```
 
 
+# ES5的继承
+```js
+// 利用构造函数继承，无法继承原型链上的内容
+// function Father(name, gender){
+//   this.name = name;
+//   this.gender = gender;
+//   this.say = function(){
+//     console.log('好好学习');
+//   };
+// }
+// Father.prototype.getName=function(){console.log('原型上的方法')} 
+
+// function Son(name, gender, score){
+//   Father.call(this, name, gender)
+// }
+
+// let p = new Son('huang', 'male', 18)
+// console.log(p.getName);
+
+// 利用原型对象继承，缺点是无法传参
+// function Father() {
+//   this.name = '张三'
+// }
+// Father.prototype.getName = function () {
+//   console.log(this.name)
+// }; 
+// function Son(){
+
+// }
+// Son.prototype = new Father();
+// let p = new Son();
+// console.log(p.name);
+// p.getName()
+
+// 最好的解决方案，是以上两种的组合
+// 在子类的构造函数中通过call借助父类的构造函数
+// 将子类的原型对象修改为父类的实例对象
+
+function Father(name, gender){
+  this.name = name;
+  this.gender = gender;
+  this.say = function(){
+    console.log('好好学习');
+  };
+}
+Father.prototype.getName=function(){console.log('原型上的方法')} 
+function Son(name, gender, socre){
+  Father.call(this, name, gender);
+}
+Son.prototype = new Father();
+Son.prototype.constructor = Father;
+let p = new Son('huang', 18, 100);
+console.log(p.name);
+p.getName()
+```
+
 # js原生的绑定点击事件
 
 ```md
@@ -1276,6 +1332,7 @@ null instanceof Object // false
 undefined instanceof object // false
 ```
 
+`注意：数组的concat/slice等，都是浅拷贝！！！！！！！`
 
 
 

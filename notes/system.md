@@ -20,6 +20,7 @@
 - [ajax, fetch, axios的区别](#ajax-fetch-axios的区别)
 - [什么是栈内存，什么是堆内存](#什么是栈内存什么是堆内存)
 - [解释cookies,sessionStorage,localStorage](#解释cookiessessionstoragelocalstorage)
+- [编译型VS解释型](#编译型vs解释型)
 - [解释：cookie session token 如何保持用户的登录状态](#解释cookie-session-token-如何保持用户的登录状态)
 - [公钥，私钥，签名](#公钥私钥签名)
 - [如何理解前后端分离](#如何理解前后端分离)
@@ -38,6 +39,15 @@
 
 # 浏览器的五个进程
 ![image](../images/00017.png)
+
+2007年前的浏览器都是单进程的，由于早期的浏览器要展示的网页内容比较简单，只是展示图片和文字等，很少交互的功能，所以采用单进程架构能更节省内存。但是随着技术的进步，网页不仅要展示文字图片，还要展示各种复杂的动画效果，使用JavaScript交互也越来越多。所有的功能模块都在一个进程中运行，会导致浏览器不稳定、不流畅和不安全。
+
+不稳定：由于进程中任何一个线程执行出错都会导致整个进程崩溃，插件和渲染引擎都很容易出错，一旦页面线程执行出错，将导致整个浏览器进程崩溃。
+
+不流畅：JavaScript运行环境和页面渲染都运行在同一个线程中，如果出现复杂的JS代码或者死循环，JavaScript运行环境将一直独占页面线程，所有页面都没机会执行任务，浏览器会变得卡顿无响应。
+
+不安全：线程除了共享进程中的数据还共享权限，也就是说如果浏览器进程拥有操作系统的读写权限，一些恶意插件就可以往计算机写入病毒，读取计算机上的账号密码。
+
 
 # cookie放在请求头中容易被获取，如何保证其安全性
 
@@ -322,6 +332,12 @@ CORS(跨域资源共享)
 
 - session用于存储会话中的数据，一个会话结束(例如浏览器关闭)，就消失了
 - loaclStorage用于持久化存储数据，需要人为手动清除
+
+# 编译型VS解释型
+
+[编译型VS解释型](https://www.xiaohongshu.com/discovery/item/62b28a960000000001029b1b?app_platform=android&app_version=7.55.0&share_from_user_hidden=true&type=video&xhsshare=CopyLink&appuid=5fe094d4000000000101d940&apptime=1663245616)
+
+[预编译](https://www.xiaohongshu.com/discovery/item/62750acc0000000021039aec?app_platform=android&app_version=7.55.0&share_from_user_hidden=true&type=normal&xhsshare=CopyLink&appuid=5fe094d4000000000101d940&apptime=1663245333)
 
 # 解释：cookie session token 如何保持用户的登录状态
 
