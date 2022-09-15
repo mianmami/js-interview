@@ -1,3 +1,5 @@
+- [](#)
+- [String和 new String的区别](#string和-new-string的区别)
 - [js代码有问题，编译器是如何识别报错的](#js代码有问题编译器是如何识别报错的)
 - [js事件循环机制](#js事件循环机制)
 - [箭头函数和普通函数的区别](#箭头函数和普通函数的区别)
@@ -10,7 +12,7 @@
 - [字符串模板](#字符串模板)
 - [使用ES6设计一个计数器](#使用es6设计一个计数器)
 - [一句话找到数据的最大值](#一句话找到数据的最大值)
-- [数据类型有哪些](#数据类型有哪些)
+- [数据类型有哪些，他们的区别是什么？](#数据类型有哪些他们的区别是什么)
 - [实现深拷贝](#实现深拷贝)
 - [instanceof如何实现](#instanceof如何实现)
 - [如何实现数组去重](#如何实现数组去重)
@@ -38,13 +40,164 @@
 - [NumberAPI](#numberapi)
 - [SymbolAPI](#symbolapi)
 - [字符串API](#字符串api)
+- [其他](#其他)
+# undefined和null的区别
+[参考资料](https://blog.csdn.net/m0_47135993/article/details/119800231)
+
+# js精度问题
+[参考资料](https://www.cnblogs.com/94pm/p/15990601.html)
+
+# less和sass的区别
+[参考资料](https://blog.csdn.net/JoeBlackzqq/article/details/98885880)
+
+# ParseInt用法
+[参考资料](https://blog.csdn.net/zebghfv/article/details/118938270)
+- 0x开头，16进制
+- 数字开头，解析数字(后面如果有字母，舍弃不要)
+- 字母开头，返回NAN
+
+# Promise相关知识
+
+- promise状态一旦发生更改，就不能改变
+```js
+let p = new Promise((resolve, reject) =>{
+  resolve(1)
+})
+
+p.then((data)=>{
+  console.log(data);
+  p.then((data)=>{
+    console.log(data);
+  })
+})
+// 两次得到的数据是一样的
+```
+- promise初始化的时候，内部的代码是同步任务代码
+```js
+let p = new Promise((resolve, reject) =>{
+  console.log(1); // 先执行
+})
+console.log(2);
+```
+- promise.then中执行的内容在微任务队列中，优先级要高于异步任务队列(可以理解为宏任务队列) 同步任务 -> 微任务 -> 宏任务
+
+- promise的静态方法
+```js
+let p1 = Promise.resolve(1) // 返回一个成功的promise
+let p2 = Promise.reject(2) // 返回一个失败的Promise
+p1.then((res)=>{
+  console.log(res); //1
+})
+p2.catch((err)=>{
+  console.log(err); //2
+})
+
+```
+- thenable
+```js
+let p = Promise.resolve({
+  name: 18,
+  then(resolve, reject){
+    resolve(1) // 如果一个对象有then属性，那么就称这个是thenable的。。。
+  }
+})
+p.then(res=>{
+  console.log(res); // 这里不会返回一个对象，而是返回then中resolve中传递的值
+})
+
+```
+[参考资料](https://blog.csdn.net/weixin_33753845/article/details/91478557)
+
+- 链式调用的一些知识点
+
+```js
+// 简单点来说就是：每次调用函数时，它只接受一部分参数，并返回一个函数，直到传递所有参数为止。
+
+function add (...args) {
+  //求和
+  return args.reduce((a, b) => a + b)
+}
+
+function currying (fn) {
+  let args = []
+  return function temp (...newArgs) {
+      if (newArgs.length) {
+          args = [
+              ...args,
+              ...newArgs
+          ]
+          return temp
+      } else {
+          let val = fn.apply(this, args)
+          args = [] //保证再次调用时清空
+          return val
+      }
+  }
+}
+
+let addCurry = currying(add)
+console.log(addCurry(1)(2)(3)(4, 5)())  //15
+console.log(addCurry(1)(2)(3, 4, 5)())  //15
+console.log(addCurry(1)(2, 3, 4, 5)())  //15
+
+
+// 状态依赖
+// p4是要晚于p5执行，且p5中沿用了p4中reject的状态(按道理，p4是注册成功的回调，但是跟随p5注册了失败的回调)
+let p4 = new Promise((resolve, reject)=>{
+  setTimeout(()=>{
+    reject('我是失败回调的数据')
+  }, 3000)
+})
+
+let p5 = new Promise((resolve, reject)=>{
+  setTimeout(()=>{
+    resolve(p4)
+  })
+})
+
+p5.then((res)=>{
+  console.log('我是成功的回调');
+})
+p5.catch((err)=>{
+  console.log('我是失败的回调', err);
+})
+```
+- Promise.all 
+
+```js
+// Promise.all会等待最长的一个Promise执行完毕，再返回结果，只要有一个发生错误，就返回错误的结果
+
+```
+
+# arguments是数组吗？ （js）
+[参考资料](https://blog.csdn.net/weixin_43677787/article/details/122531449)
+
+# String和 new String的区别
+一个是普通数据类型，一个是复杂数据类型
+
+console.log( typeof str1 ); //string
+
+console.log( typeof str2 ); //object
+
+
+![image](../images/00016.png)
+
+[参考资料](https://blog.csdn.net/u012174809/article/details/124446344)
+
 
 # js代码有问题，编译器是如何识别报错的
 
   [这个好像不算是答案，但是能帮我看一下如何处理异常](https://juejin.cn/post/6862225202332794894)
 
 # js事件循环机制
+
+- 遇到同步任务，直接放入call stack
+- 遇到异步任务，调用web Apis
+- web apis执行完毕，把其中的回调函数加入callback queue
+- 事件轮询，不断监测call stack和callback queue，如果call stack空闲，就开始执行callback queue中的任务
+
 - 注意settimeout如果延迟事件写0，不是马上执行，其默认延迟时间是4ms,且，只有主线程空闲，它才能调用，如果主线程一直阻塞，那么它可能永远停滞
+- 注意：回答的时候，要提到js是单线程，所以有异步任务，所以有事件轮询(回调函数)
 
 [参考资料](https://blog.csdn.net/CherryCola_zjl/article/details/112007310?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-112007310-blog-125029860.pc_relevant_multi_platform_whitelistv4eslandingctr2&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-112007310-blog-125029860.pc_relevant_multi_platform_whitelistv4eslandingctr2&utm_relevant_index=1)
 
@@ -136,7 +289,9 @@ console.log(sum().next().value);
 # 一句话找到数据的最大值
 
 Math.max(...arr) 如果有多个值，写成 Math.max(1,2,3,4,5,6)
-# 数据类型有哪些
+# 数据类型有哪些，他们的区别是什么？
+
+区别要谈到栈内存和堆内存
 
 [参考资料](https://www.bilibili.com/read/cv16752509/)
 
@@ -385,8 +540,21 @@ btn3.onclick = function
 [参考个人笔记](https://blog.csdn.net/mianmami/article/details/126203755?csdn_share_tail=%7B%22type%22%3A%22blog%22%2C%22rType%22%3A%22article%22%2C%22rId%22%3A%22126203755%22%2C%22source%22%3A%22mianmami%22%7D&ctrtid=4A0mP)
 
 原生具备 Iterator 接口的数据结构如下。
- - Array, String, map, set, string 
+ - Array, map, set, string 
  - 普通对象配置Symbol.iterator没用，类数组对象配置Symbol.iterator可以用let...of...访问
+
+一些区别
+
+- Promise是ES6，而async是ES7
+- 使用async函数可以让代码简洁很多，不需要像Promise一样需要些then，不需要写匿名函数处理- Promise的resolve值，也不需要定义多余的data变量，还避免了嵌套代码。
+- Promise 中不能自定义使用 try/catch 进行错误捕获，但是在 Async/await 中可以像处理同步代码处理错误 ,简而言之就是Async/await更好的解决了异步代码同步化的问题
+- Promise有很多并行神器，比如Promise.all\Promise.race等。这些是async没法搞定的
+- async本身返回值就是一个promise对象，接在await后面，会直接阻塞这个函数中后面代码的执行，但是不会阻塞主线程中同步代码的执行(看一下参考资料)
+
+[参考资料](https://www.jianshu.com/p/e952702446d7)
+
+[async await如何捕获异常](https://blog.csdn.net/qq_42543244/article/details/123423894)
+
 
 # 原型链
 ![image](../images/00008.png)
@@ -422,7 +590,16 @@ CMD就是当我用到哪个插件，就下载哪个插件
 
 # 闭包
 
-我们需要一种机制：既能长期保存遍历，又不会污染全局的环境，这就是闭包
+我们需要一种机制：既能长期保存遍历，又不会污染全局的环境，这就是闭包。可以提一嘴，函数柯里化，iterator都是用了闭包(保留了一些变量在内存中很重要！！)
+
+优点：
+
+- 可以访问到函数内部的变量
+- 可以避免全局变量的污染
+- 被闭包使用的变量，一直会驻留内存
+
+缺点：滥用闭包会造成 增大内存的使用量，影响性能。还可能会导致内存的泄漏问题。
+
 
 满足闭包的条件：
 
@@ -472,6 +649,8 @@ console.log(i);  // 5 0 1 2 3 4
 - 全局、局部、块级作用域。在块级{}作用域中，let/const定义的变量是独享的,var定义的变量还是全局变量。这个应用在for循环里很明显，var i = 1， 然后里面有异步操作会报错哦(不是你想要的结果)！！！`参考闭包的内容`
 - 通过var定义的变量会挂在到全局变量，let const不会
 
+[参考资料](https://blog.csdn.net/weixin_42354407/article/details/105540817)
+
 # 深拷贝和浅拷贝
 [参考资料](https://www.jb51.net/article/192518.htm)
 
@@ -495,8 +674,13 @@ JS的垃圾回收机制是为了以防内存泄漏，内存泄漏的含义就是
 - 定义的全局变量
 - 定义的闭包
 - dom清空或删除时，事件未清除导致的内存泄漏
-- 
+
+`什么时候执行垃圾回收`
+
+垃圾回收器会定期即周期性地找出那些不再用到的变量，然后释放其内存。周期性是因为其开销比较大，所以垃圾回收器会按照固定的时间间隔周期性地执行。不在用到的变量是指生命周期结束的变量。
 [参考资料](http://t.zoukankan.com/fightjianxian-p-11973234.html)
+
+[参考资料](https://blog.csdn.net/zg0601/article/details/121361657)
 
 # Object .is 和 == 和 === 有什么区别
 
@@ -517,6 +701,13 @@ JS的垃圾回收机制是为了以防内存泄漏，内存泄漏的含义就是
   [参考资料](https://blog.csdn.net/weixin_47450807/article/details/123085255)
 
 # 数组Api
+`Array.valueOf()`
+
+返回数组的原始值
+```js
+let arr = ['apple', 'banana']
+console.log(arr.valueOf()) // [ 'apple', 'banana' ]
+```
 
 `Arry.at(index)`
   - 等同于Array[index]，返回索引值
@@ -1064,7 +1255,26 @@ console.log(String.fromCharCode(97));
 
 str.replace只替换一个，且不改变原来的str, 会返回一个最新的结果，如果要全部替换，可以用str.replaceALL
 
+# 其他
 
+`为什么js执行是单线程的？`：
+
+如果是多线程，存在着添加DOM，删除DOM这样的`DOM冲突`。
+
+为了不让进程阻塞，可以通过同步任务，异步任务的方式来解决。
+
+而异步的解决方案是通过 事件轮询(事件循环)的方式来执行。而事件轮询的核心是回调函数。
+
+`程序判断题`
+```js
+null == undefined // true
+null === undefined // false
+undefined === undefined // true
+null == null // true
+null === null // true
+null instanceof Object // false
+undefined instanceof object // false
+```
 
 
 

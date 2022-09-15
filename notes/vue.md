@@ -192,8 +192,50 @@ console.log(array);
 # 路由的模式有哪几种
 
   [参考资料](https://blog.csdn.net/weixin_62930485/article/details/123491635)
+
+  [参考资料](https://www.cnblogs.com/wanghuanl/p/16170226.html)
+
   [参考资料](https://www.bilibili.com/video/BV1ba4y1s7Ra/?spm_id_from=333.788.recommend_more_video.-1&vd_source=60248c7c7bc979b113e0ac4403b63220)
-  如果选用了history模式，需要后端配置，全部都重定向到Index.html(我理解就是出现404错误，就都跳转回首页) 这个可以回答`history模式中前后端是如何合作的`吗？？？
+  如果选用了history模式，需要后端配置，全部都重定向到Index.html(我理解就是出现404错误，就都跳转回首页) 这个可以回答`history模式中前后端是如何合作的`吗？？？好像还有说要设置publicPath: './'的
+
+`history模式`： 关注history.pushState 和 window.onpopstate两个API
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <button id='btn'>改变url</button>
+  <script>
+    const oBtn = document.getElementById("btn")
+    // 监听当前的事件
+    window.addEventListener("DOMContentLoaded", ()=>{
+      console.log(location.pathname);
+    })
+    // 切换路由
+    oBtn.addEventListener('click', ()=>{
+      history.pushState({name: 'user'}, '', '/user')
+      console.log('切换路由为', 'user');
+    })
+    // 监听浏览器的前进后退按钮
+    // e.state需要设置，例如user页面就设置为{name: 'user'}
+    window.onpopstate = (e) => {
+      console.log('onpopstate', e.state, location.pathname);
+    }
+  </script>
+</body>
+</html>
+```
+`hash模式`
+```html
+window.onhashchange = function(){}
+```
+
+
 
 
 # v-for中为什么要有key

@@ -16,3 +16,13 @@ box-sizing有常用的两个属性
 # e.target和e.currentTarget的区别
 备注：如果要监听input框的变化，同时拿到里面的数据，可以用e.detail.XX来进行获取
 ![image](../images/00001.png)
+
+# \<meta>标签的http-equiv的取值
+
+\<meta http-equiv="content-security-policy|content-type|default-style|refresh">
+
+上面这几个是以前的，后面又新增了一个 
+
+[参考资料](https://blog.csdn.net/weixin_42321619/article/details/109021181)
+
+[参考资料](https://www.w3school.com.cn/tags/att_meta_http_equiv.asp)

@@ -1,4 +1,9 @@
+- [](#)
+- [transform transition animation](#transform-transition-animation)
+- [css中什么是伪类](#css中什么是伪类)
+- [css权重问题](#css权重问题)
 - [1rem、1em、1vh、1px各自代表的含义？](#1rem1em1vh1px各自代表的含义)
+- [如何监听屏幕大小](#如何监听屏幕大小)
 - [媒体查询如何实现，移动端适配如何实现？](#媒体查询如何实现移动端适配如何实现)
 - [双飞翼布局 圣杯布局（左右定宽，中间自适应是怎么实现的，有什么方法 实现css三栏布局，中间固定，两边自适应](#双飞翼布局-圣杯布局左右定宽中间自适应是怎么实现的有什么方法-实现css三栏布局中间固定两边自适应)
 - [画一个三角形](#画一个三角形)
@@ -9,6 +14,225 @@
 - [清除浮动的方式](#清除浮动的方式)
 - [其他](#其他)
 
+# 如何制作轮播图
+
+利用setInterval或者是animation不断改变margin-left的值
+
+# 如何实现.5px的边框
+[参考资料](https://blog.csdn.net/baogeprh/article/details/123183114)
+
+# css中宽度随内容自适应，如何实现
+注意：如果没有设置宽度的话，默认继承父元素的宽度，所以很可能是100%。
+
+`width: fit-content;` // 内容自适应
+# BFC 
+[参考资料](https://www.xiaohongshu.com/discovery/item/6308d51b000000001b006abc?app_platform=android&app_version=7.55.0&share_from_user_hidden=true&type=normal&xhsshare=WeixinSession&appuid=5fe094d4000000000101d940&apptime=1662949214)
+
+# 定位
+![image](../images/00019.png)
+# 选择器
+
+`标签选择器`
+
+直接用标签名
+
+`id选择器`
+
+#id名
+
+`类选择器`
+
+.类名，注意可以有多个，但是id名只能有一个
+
+`后代选择器`
+
+标签名称1 标签名称2
+
+后代选择器必须**用空格隔开** 后代不仅仅是儿子, **也包括孙子/重孙子**, 只要最终是放到指定标签中的都是后代
+
+后代选择器不仅仅可以使用标签名称, 还可以使用其它选择器
+
+后代选择器可以通过空格一直延续下去
+
+先找到所有名称叫做"标签名称1"的标签, 然后再在这个标签下面去查找所有名称叫做"标签名称2"的标签, 然后在设置属性。
+
+`子元素选择器`
+
+标签名称1>标签名称2
+
+子元素选择器之间需要用&gt;符号连接, 并且不能有空格
+
+子元素选择器只会查找儿子, 不会查找其他被嵌套的标签
+
+子元素选择器可以通过>符号一直延续下去
+
+`交集选择器`
+
+选择器1选择器2
+
+选择器和选择器之间没有任何的连接符号
+
+**<u>并集选择器</u>**
+选择器1,选择器2
+给选择器1，选择器2都添加上某种样式
+
+`相邻兄弟选择器`
+
+选择器1+选择器2
+
+相邻兄弟选择器只能选中紧跟其后的那个标签, 不能选中被隔开的标签
+
+`通用兄弟选择器`
+
+div~h2
+
+通用兄弟选择器选中的是指定选择器后面某个选择器选中的所有标签, 无论有没有被隔开都可以选中
+
+`序列选择器`
+
+[请参考这篇文字](https://blog.csdn.net/mianmami/article/details/117913056)
+
+`属性选择器`
+根据对应的属性选择标签。(下面的E是标签名)
+
+E[att]{}：选取含有某种属性的元素
+
+E[att=“val”]：选取带有指定属性和值的元素
+
+E[att^=“val”]：属性以指定元素开头
+
+E[att$=“val”]：属性以指定元素结尾
+
+E[att*=“val”]: 选取属性值中包含指定词汇的元素，只要包含这个单词即可。
+
+E[att~=“val”]：选取属性值中包含指定词汇的元素，需要是一个独立的单词，被空格分开。
+
+
+最常见的应用场景, 就是用于区分input属性 input[type=password]{}
+
+如果想要选择包含某属性的全部元素，可以这样写:
+[attr]{
+}
+或者是
+.demo[att]，就是类名为demo，又包含att属性的元素。
+**通配符选择器**
+*
+
+`伪元素选择器`
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>68-伪元素选择器</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        div{
+            width: 200px;
+            height: 200px;
+            background-color: red;
+        }
+        /*
+        p{
+            width: 50px;
+            height: 50px;
+            background-color: pink;
+        }
+        */
+
+        div::before{
+            content: "爱你";
+            width: 50px;
+            height: 50px;
+            background-color: pink;
+            display: block;
+        }
+        div::after{
+            /*指定添加的子元素中存储的内容*/
+            content: "么么哒";
+            /*指定添加的子元素的宽度和高度*/
+            width: 50px;
+            /*height: 50px;*/
+            /*内容是可以超出标签的范围的, 所以高度为0依然可以看见内容*/
+            height:0px;
+            background-color: pink;
+            /*指定添加的子元素的显示模式*/
+            display: block;
+            /*隐藏添加的子元素*/
+            /*visibility: hidden;*/
+        }
+
+    </style>
+</head>
+<body>
+<!--
+1.什么是伪元素选择器?
+伪元素选择器作用就是给指定标签的内容前面添加一个子元素或者给指定标签的内容后面添加一个子元素
+
+2.格式:
+标签名称::before{
+    属性名称:值;
+}
+给指定标签的内容前面添加一个子元素
+
+标签名称::after{
+    属性名称:值;
+}
+给指定标签的内容后面添加一个子元素
+
+-->
+<div>
+    <!--<p>爱你</p>-->
+    我是文字
+    <!--<p>么么哒</p>-->
+</div>
+
+</body>
+</html>
+```
+关于优先级的问题：
+
+行内样式 > id选择器 > 类选择器 > 标签选择器
+
+# 伪类和伪元素
+
+- 伪类能出现多次，而伪元素只能出现一次
+- 伪类：:nth-of-type(1)这种, 伪元素: ::after()这种
+- 伪类本质上是给元素创建多一个类名，多个类名多个效果
+- 伪元素本质上是创建了一个有内容的虚拟容器，也就是多了一个dom节点(元素)
+- CSS3中伪类和伪元素的语法不同，伪元素一般是:: , 伪类是:
+  
+  [参考资料](https://blog.csdn.net/runner_123/article/details/79851329)
+
+# 关于opacity:0、visibility:hidden、display:none三个属性的比较以及拓展
+[参考资料](https://blog.csdn.net/weixin_38080573/article/details/79435869)
+
+# input标签的默认宽度
+[参考资料](https://blog.csdn.net/laiyangwen1120/article/details/78427384/)
+
+# line-height1.5和line-height:150%的区别
+[参考资料](https://blog.csdn.net/qq_40685439/article/details/109138034)
+注意：默认的font-size大小是16px
+
+# transform transition animation
+
+- transition是过渡，强调样式值得变化过程，只有开始和结束；需要通过hover或js等事件来配合触发；只能触发一次
+- animation也叫关键帧，通过@keyframe结合可以设置中间帧得一个状态(可以通过from...to...或者百分号来进行设置)；且可以不触发事件就触发过程；可触发多次
+- transform是转换，指的是改变元素得外观，没有动画效果，唰的一下就改变了(可以理解了某一个状态)
+
+[参考资料](https://www.cnblogs.com/ypppt/p/13363747.html)
+# css中什么是伪类
+[参考资料](https://www.w3school.com.cn/css/css_pseudo_classes.asp)
+# css权重问题
+- 然后要提一下 !important 是具有最高的权重即可
+- 通配符，相邻选择器，子选择器的权重是0
+- 继承的样式没有权重
+
+
+[参考资料](https://blog.csdn.net/weixin_55017780/article/details/117667113)
 
 # 1rem、1em、1vh、1px各自代表的含义？
 
@@ -30,10 +254,24 @@
 
 [参考资料](https://www.bilibili.com/video/BV1Gu411o7CP?spm_id_from=333.337.search-card.all.click&vd_source=60248c7c7bc979b113e0ac4403b63220)
 
+# 如何监听屏幕大小
+
+window.onresize = function
+
+window.addEventListener('resize', function)
+
+获取网页的宽高
+
+document.body.clientWidth;
+
+document.body.clientHeight;
+
 
 # 媒体查询如何实现，移动端适配如何实现？
 
 [媒体查询](https://blog.csdn.net/dream_lifes/article/details/122013152)
+
+[参考资料](https://blog.csdn.net/qq_36303853/article/details/99717724)
 
 
 # 双飞翼布局 圣杯布局（左右定宽，中间自适应是怎么实现的，有什么方法 实现css三栏布局，中间固定，两边自适应
@@ -143,7 +381,11 @@ flex: 1: 表示 flex: 1 1 auto  自动扩充
 - filter: blur(1.5px) 虚化，看起来像毛玻璃
 - [postoin:sticky的使用方法](https://www.jb51.net/css/716126.html)
 
+# 其他
 
+- 把鼠标移到按钮并点击时，会产生一串什么样的事件？ hover active foucus
+- 行内元素与浮动元素发生重叠，其边框，背景和内容都会显示在浮动元素之下(错误：边框背景会被遮盖，但是内容会被挤下来)
+- 注意：是padding不能直接从顶部挤下来，margin是可以的。
 
 
 

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <input type="text">
+  <button id='submit'>提交</button>
+
+  <script>
+    let oBtn = document.getElementById("submit");
+    // oBtn.addEventListener("click", debounce(submit, 1000))
+    oBtn.addEventListener("click", throttle(submit, 2000))
+
+    function submit(e) {
+      console.log(1);
+      console.log(e); // 拿到对应的事件
+      console.log(this); // 拿到对应的this
+    }
+
+    // 防抖：通过setTimeout的方式，在一定的时间间隔内，将多次触发变为一次触发
+    function debounce(fn, time){
+      let timerId = null
+      return function(){
+        //这个作用域的环境，可以看作就是submit一开始的环境，现在给原本的环境套了一层setTimeout
+        // 所以用了箭头函数，直接拿到了原来作用域中的this和arguments
+        clearTimeout(timerId)
+        timerId = setTimeout(()=>{
+          fn.call(this,arguments)
+        }, time);
+      }
+    }
+
+
+    // 节流：让触发的次数减少(不为1次)
+
+    function throttle(fn, time){
+      let canRun = true
+      return function(){
+        if(!canRun) return
+        canRun = false;
+        setTimeout(()=>{
+          // 只有定时器执行后，才重新让你可以进入，就进行了节流拉！！！
+          fn.apply(this, arguments);
+          canRun = true
+        }, time)
+      }
+    }
+
+
+    
+  </script>
+</body>
+
+</html>

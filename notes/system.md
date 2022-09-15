@@ -1,12 +1,18 @@
-- [浏览器原理](#浏览器原理)
-- [重绘重排](#重绘重排)
+- [进程和线程的区别](#进程和线程的区别)
+- [进程的调度算法](#进程的调度算法)
+- [浏览器的五个进程](#浏览器的五个进程)
+- [cookie放在请求头中容易被获取，如何保证其安全性](#cookie放在请求头中容易被获取如何保证其安全性)
 - [浏览器渲染页面的流程](#浏览器渲染页面的流程)
 - [url输入到页面发生了什么？](#url输入到页面发生了什么)
 - [DNS解析](#dns解析)
 - [TCP和UDP](#tcp和udp)
 - [HTTP和HTTPs](#http和https)
 - [http缓存(强缓存、协商缓存)](#http缓存强缓存协商缓存)
+- [如果有10万或100万条数量庞大的数据, 你怎么渲染到页面](#如果有10万或100万条数量庞大的数据-你怎么渲染到页面)
+- [http请求的方法](#http请求的方法)
 - [状态码](#状态码)
+- [什么是死锁](#什么是死锁)
+- [前端的安全问题](#前端的安全问题)
 - [什么是CSRF XSS](#什么是csrf-xss)
 - [http和https](#http和https-1)
 - [HTTP协议](#http协议)
@@ -20,24 +26,47 @@
 - [什么是MVVM](#什么是mvvm)
 - [get和Post有什么区别](#get和post有什么区别)
 - [常用的git命令](#常用的git命令)
+- [大文件如何上传](#大文件如何上传)
+- [如何封装axios, axios请求行里面添加什么内容](#如何封装axios-axios请求行里面添加什么内容)
+- [其他](#其他)
 
+# 进程和线程的区别
+[参考资料](https://blog.csdn.net/weixin_48271092/article/details/123649795)
 
+# 进程的调度算法
+[参考资料](https://blog.csdn.net/qq_41899026/article/details/117201179 )
 
+# 浏览器的五个进程
+![image](../images/00017.png)
 
+# cookie放在请求头中容易被获取，如何保证其安全性
+
+[参考资料](https://blog.csdn.net/shuidinaozhongyan/article/details/78155444/)
+
+[参考资料](https://www.csdn.net/tags/MtTagg0sNjE3OTQtYmxvZwO0O0OO0O0O.html)
  
+别人可能就拿着你的cookie去进行登录了，就冒领了你的身份。。
 
-# 浏览器原理
 
-# 重绘重排
+
+
 # 浏览器渲染页面的流程
+
+[参考资料](https://blog.csdn.net/p1967914901/article/details/122690769?spm=1001.2101.3001.6650.3&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-3-122690769-blog-119848502.pc_relevant_multi_platform_whitelistv3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-3-122690769-blog-119848502.pc_relevant_multi_platform_whitelistv3&utm_relevant_index=6)
+
+[参考资料](https://www.dazhuanlan.com/administrator/topics/1193755)
+
+- 最首要的区别是元素位置： 使用 top left 定位是直接改变元素真实位置的，简单来说你 top: 5px 那就真的是离父容器上端 5px 或者偏离顶部定位 5px（这里我们不讨论 position 各种定位的破事） 但是你用 transform: translateY(-5px) 只是改变了视觉位置，不会发生重排，元素本身位置还是在 0px，只是视觉上向上偏移了 5px。这一点对于 css 布局是非常重要的，因为大多数情况下你不希望一个元素在动画的时候（比如飞离 fade off）会导致父元素大小改变然后导致 siblings 元素位置变动从而导致集体 shaking，所以很多时候我们用 transform。(简单来说，translate不会引起回流)
+- 读取元素的属性offsetWidth和offsetHeight会引起回流
 
 # url输入到页面发生了什么？
 ![image](../images/00014.png)
+![image](../images/00018.png)
 
 # DNS解析
 ![image](../images/00015.png)
 
-客户端首先会查看是否有本地域名服务器(可以理解为网络运营商服务器)中是否存在dns的缓存，如果有，直接查表得到对应的IP地址。如果没有，然后就通过本地域名服务器进行后续的查询(根服务器，顶级域名服务器，权限服务器)，根服务器就是一个.，例如www.baidu.com.  .com是顶级域名，.是根域名。查询的方式可以分为迭代查询和递归查询，由请求报文来进行设置。
+客户端首先会查看是否有本地域名服务器(可以理解为网络运营商服务器)中是否存在dns的缓存，如果有，直接查表得到对应的IP地址。如果没有，然后就通过本地域名服务器进行后续的查询(根服务器，顶级域名服务器，权限服务器)，根服务器就是一个.，例如www.baidu.com.  .com是顶级域名，.是根域名。查询的方式可以分为迭代查询和递归查询，由请求报文来进行设置。注意DNS解析是基于UDP的
 
 [参考资料](https://blog.csdn.net/qq_30154571/article/details/122027505)
 
@@ -46,9 +75,30 @@
 [参考资料](https://blog.csdn.net/ymb615ymb/article/details/123449588)
 
 # HTTP和HTTPs
+可以把CA理解为一个提供公钥和私钥的机构。服务器向客户端发送的公钥和私钥，都是从CA机构请求过来的。同时CA机构会给客户端颁发一个根证书。这个根证书，就可以用来验证公钥是否是合法的。
 
+先进行tcp三次握手，再进行TSL/SSL协商
 
+http:一次最多可以发送6个请求.利用tcp进行数据传输，是可靠的，有序的，服务器会按照顺序来接收。http1.1有keep-alive字段，表示链接不会断开，下次可以复用上次的链接。
 
+如果是重定向，那么会重新走一次完整的http请求，因为url的地址发生了变化！如果302临时重定向，我们经常输入网址不输入www,这个时候就会临时重定向
+
+https是在http协议的基础上用TLS/SSL(语言表达的时候，可以说进行了SSL协商，TLS和SSL都是加密方法，TLS更加先进罢了)进行加密，这样通信就不容易受到拦截和攻击。
+
+怎么理解数字证书：CA中心为每个使用公开密钥的用户发放一个数字证书，数字证书的作用是证明证书中列出的用户合法拥有证书中列出的公开密钥。CA机构的数字签名使得攻击者不能伪造和篡改证书。在SET交易中，CA不仅对持卡人、商户发放证书，还要对获款的银行、网关发放证书。(就是给你发了证书，然后就可以通过公钥获取到证书中的签名,就能判断是不是合法的server)
+
+HTTP 与 HTTPS 区别
+- HTTP 明文传输，数据都是未加密的，安全性较差，HTTPS（SSL+HTTP） 数据传输过程是加密的，安全性较好。
+- 使用 HTTPS 协议需要到 CA（Certificate Authority，数字证书认证机构） 申请证书，一般免费证书较少，因而需要一定费用。证书颁发机构如：Symantec、Comodo、GoDaddy 和 GlobalSign 等。
+- HTTP 页面响应速度比 HTTPS 快，主要是因为 HTTP 使用 TCP 三次握手建立连接，客户端和服务器需要交换 3 个包，而 HTTPS除了 TCP 的三个包，还要加上 ssl 握手(SSL数字证书)需要的 9 个包，所以一共是 12 个包。
+- http 和 https 使用的是完全不同的连接方式，用的端口也不一样，前者是 80，后者是 443。
+- HTTPS 其实就是建构在 SSL/TLS 之上的 HTTP 协议，所以，要比较 HTTPS 比 HTTP 要更耗费服务器资源。
+
+[参考资料](https://www.bilibili.com/video/BV1M44y1175D?spm_id_from=333.337.search-card.all.click&vd_source=60248c7c7bc979b113e0ac4403b63220)
+
+[参考资料](https://www.bilibili.com/video/BV1KY411x7Jp?spm_id_from=333.337.search-card.all.click&vd_source=60248c7c7bc979b113e0ac4403b63220)
+
+[根证书如何校验公钥的合法性呢？](https://www.zhihu.com/question/37370216)
 
 
 # http缓存(强缓存、协商缓存)
@@ -63,7 +113,14 @@
 
 [参考资料](https://blog.csdn.net/qq_37857224/article/details/119751569?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-0-119751569-blog-110228250.pc_relevant_multi_platform_featuressortv2dupreplace&spm=1001.2101.3001.4242.1&utm_relevant_index=3)
 
+# 如果有10万或100万条数量庞大的数据, 你怎么渲染到页面
 
+如果是一个很庞大的数据需要渲染到页面, 我们就可以使用分页的操作进行分批次的渲染; 使用定时器每一次显示几百条.用户在看上一页数据的时候, 后面的数据还是在不断的渲染.
+
+和后端配合，请求的时候设置每页展示的数据量和需要展示的页数。然后点击按钮的时候，修改参数即可。
+
+# http请求的方法
+[参考资料](https://m.runoob.com/http/http-methods.html)
 
 # 状态码
 - 301： 永久重定向
@@ -72,17 +129,42 @@
 - 400： bad request 请求的报文中有语法错误(例如json格式错误等等)
 - 405： method not allow: 请求的方式和后台给的不同
 
+# 什么是死锁
+
+[参考资料](https://blog.csdn.net/eeeeety6208/article/details/124905896)
+# 前端的安全问题
+
+[参考资料](https://blog.csdn.net/qq_38713274/article/details/115426482)
 
 # 什么是CSRF XSS
+- CSRF：黑客盗用了你的身份，
 服务端只是保存了session状态，但是不知道是黑客触发的，还是用户触发的。
 - 尽量用Post
 - 加入验证码
 - 使用token
 
+[参考资料](https://blog.csdn.net/qq_45803593/article/details/124727762)
+
 [CSRF(cross site request forgery跨站点请求伪造)](https://www.bilibili.com/video/BV1iW411171s?spm_id_from=333.337.search-card.all.click&vd_source=60248c7c7bc979b113e0ac4403b63220)
 
+xss（cross-site-scripting）攻击指的是攻击者往 web 页面里插入恶意 html 标签或者 javascript 代码 ；
 
-在你的页面里嵌入一些脚本代码
+XSS危害：
+
+- 截取用户登录的cookie
+- 截取用户的行为
+- 蠕虫病毒
+
+XSS种类：
+
+- 反射性：需要用户的点击，点击了之后执行js代码
+- 存储型：<持久化> 代码是存储在服务器数据库中的，如在个人信息或发表文章等地方，加入代码，如果没有过滤或过滤不严，那么这些代码将储存到服务器中，每当有用户访问该页面的时候都会触发代码执行，这种XSS非常危险，容易造成蠕虫，大量盗窃cookie（虽然还有种DOM型XSS，但是也还是包括在存储型XSS内）。
+- DOM型XSS
+
+XSS存在的原因：对url的参数，或者是用户输入数据的地方，没有做充分的过滤，所以有一些不合法的内容，能被保存在web服务器，当用户对页面进行访问的时候，就会出现xss攻击。
+
+XSS防御的策略：对输入进行过滤，对输出进行编码，对cookie设置http-only。例如输入的时候把script标签去掉。输出的时候将<转化为`\&lt;`等。
+
 
 [XSS(cross site Scripting 跨站脚本)](https://www.bilibili.com/video/BV1DW411U7XE/?spm_id_from=333.788.recommend_more_video.-1&vd_source=60248c7c7bc979b113e0ac4403b63220)
 
@@ -92,12 +174,7 @@
 
 # http和https
 
-HTTP 与 HTTPS 区别
-- HTTP 明文传输，数据都是未加密的，安全性较差，HTTPS（SSL+HTTP） 数据传输过程是加密的，安全性较好。
-- 使用 HTTPS 协议需要到 CA（Certificate Authority，数字证书认证机构） 申请证书，一般免费证书较少，因而需要一定费用。证书颁发机构如：Symantec、Comodo、GoDaddy 和 GlobalSign 等。
-- HTTP 页面响应速度比 HTTPS 快，主要是因为 HTTP 使用 TCP 三次握手建立连接，客户端和服务器需要交换 3 个包，而 HTTPS除了 TCP 的三个包，还要加上 ssl 握手(SSL数字证书)需要的 9 个包，所以一共是 12 个包。
-- http 和 https 使用的是完全不同的连接方式，用的端口也不一样，前者是 80，后者是 443。
-- HTTPS 其实就是建构在 SSL/TLS 之上的 HTTP 协议，所以，要比较 HTTPS 比 HTTP 要更耗费服务器资源。
+
 
 `如何克服HTTP是无状态协议的缺陷`：通过cookie或者会话保存信息
 
@@ -371,14 +448,32 @@ viewModel: 连接model和view，负责路由的切换，数据双向绑定，自
 - `git checkout -b XX`: 创建一个分支，并立即切换到该分支
 - `git brahch -d XX`: 删除一个分支
 - `git merge XX`: 先切换到一个新的分支上，再把旧的内容添加到新的分支里
-- `it restore <file>`: 撤销修改的文件，注意此文件必须还未操作git add 命令。如果已经添加到了暂存区，那么先要执行 `git restore --staged <file>`
+- `git restore <file>`: 撤销修改的文件，注意此文件必须还未操作git add 命令。如果已经添加到了暂存区，那么先要执行 `git restore --staged <file>`
+- `git diff 版本1 版本2 --stat`: 对比不同版本代码状态
+- `git diff 版本1 版本2 ./路径/文件名`: 对比不同版本指定文件内容
+- `git bisect start [最近的出错的commitid] [较远的正确的commitid]`:利用二分查找的方法，帮助定位到bug的位置。
+- `git pull git fetch`: git fetch:只是把远程的仓库拉取到本地。git pull 不仅拉取到本地，还merge到本地的分支中。所以git pull是git fetch和git merge的合体
+- `git pull -rebase` :简单理解，是否要把某个分支commit进去的内容，合并到一个新的分支里面 [参考资料](https://blog.csdn.net/wuhuagu_wuhuaguo/article/details/105006408?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-105006408-blog-51199597.pc_relevant_multi_platform_whitelistv3&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-105006408-blog-51199597.pc_relevant_multi_platform_whitelistv3&utm_relevant_index=1)
 - 注意：如果一个文件夹中没有README.md，然后想要推送到github，会报错的。。。。。。。。。。。。
 - 如果要忽略一个文件夹，就创建一个.gitignore文件，然后  每一行添加一个要忽略的文件即可 例如： /test    /test/dist
 - 如果想要跟踪一个文件夹，但是不跟踪文件夹里的内容，可以在这个文件夹下 自定义一个叫做  .gitkeep的文件
-- 
 
 
+# 大文件如何上传
 
+主要思想。把input.file[0]中保存了需要传递到文件的大小，可以通过切块的方式上传。后端拿到切块的数据，重新进行合并就行了。
+
+# 如何封装axios, axios请求行里面添加什么内容
+1. 通过const request = axios.create({})创建一个请求对象，里面可以配置baseURL, timeput, transformResponse等请求所需要的参数。所有的实例化对象共享里面的配置参数。
+2. 调用axios.interceptors.request.use(config=>{}), axios.interceptors.response.use(config=>{})API配置请求拦截器和响应拦截器,
+3. 通过 request({url, data})等，就可以发起请求，并返回promise对象，然后就可以对返回的结果进行加工处理。
+
+一般来说，请求拦截器会添加config.headers.Authorization = token，携带用户的登录信息。也可以对content-type等进行配置。而响应拦截器则是根据不同的状态码如401(未授权登录)，403(登录过期),404(资源不存在)，405(请求方法错误)等，进行错误提示，或者跳转到具体指定的页面进行操作。
+
+# 其他
+
+- 在跨域请求中，下列请求头中哪种content-type一定会触发cors预检查：application/json
+- 什么是跨域预检查：默认情况下，跨域请求只支持GET,HEAD,POST方法，如果不是这三个请求方法（比如：PUT、DELETE、CONNECT、OPTIONS、TRACE和PATCH），那么将触发预检请求
 
 
 
