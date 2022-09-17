@@ -1,5 +1,4 @@
-export let bar = 'bar';
-import {foo} from './a.js';
-console.log('b.js');
-console.log(foo);
-
+exports.a = 1
+module.exports = {
+  nam: 'huang'
+}

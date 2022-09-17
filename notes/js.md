@@ -4,6 +4,7 @@
 - [ParseInt用法](#parseint用法)
 - [Promise相关知识](#promise相关知识)
 - [arguments是数组吗？ （js）](#arguments是数组吗-js)
+- [伪数组转变为真正的数组](#伪数组转变为真正的数组)
 - [String和 new String的区别](#string和-new-string的区别)
 - [js代码有问题，编译器是如何识别报错的](#js代码有问题编译器是如何识别报错的)
 - [js事件循环机制](#js事件循环机制)
@@ -178,6 +179,13 @@ p5.catch((err)=>{
 # arguments是数组吗？ （js）
 [参考资料](https://blog.csdn.net/weixin_43677787/article/details/122531449)
 
+# 伪数组转变为真正的数组
+```js
+[].slice.call(arr).
+Array.prototype.slice.call(arr)
+重新遍历一遍对象的属性名+属性值
+Array.from(arr)
+```
 # String和 new String的区别
 一个是普通数据类型，一个是复杂数据类型
 

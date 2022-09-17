@@ -1,14 +1,17 @@
 
 - [defineProperty的缺点 也是vue3 proxy监听的有点(等下再看)](#defineproperty的缺点-也是vue3-proxy监听的有点等下再看)
 - [vue2和vue3的区别](#vue2和vue3的区别)
-- [vue生命周期](#vue生命周期)
 - [函数式组件比起class组件的优势是什么](#函数式组件比起class组件的优势是什么)
 - [Vue中是怎么实现订阅者的?Vue中观察者模式和发布/订阅模式的区别和场景](#vue中是怎么实现订阅者的vue中观察者模式和发布订阅模式的区别和场景)
 - [怎样理解VUE中的单向数据流](#怎样理解vue中的单向数据流)
-- [vue父组件和子组件生命周期钩子的执行顺寻](#vue父组件和子组件生命周期钩子的执行顺寻)
-- [在哪个生命周期钩子里调用异步请求](#在哪个生命周期钩子里调用异步请求)
 - [vue3新特性](#vue3新特性)
 - [前端性能的优化](#前端性能的优化)
+- [vue生命周期](#vue生命周期)
+- [在哪个生命周期钩子里调用异步请求](#在哪个生命周期钩子里调用异步请求)
+- [什么是SSR](#什么是ssr)
+- [动态组件，异步组件](#动态组件异步组件)
+- [父子组件的生命周期执行顺序](#父子组件的生命周期执行顺序)
+- [数据代理](#数据代理)
 - [Vue路径中的@是什么意思](#vue路径中的是什么意思)
 - [虚拟DOM的好处,diff算法的原理](#虚拟dom的好处diff算法的原理)
 - [vue中keep-alive](#vue中keep-alive)
@@ -34,16 +37,83 @@
 - [什么是组件和模块](#什么是组件和模块)
 # defineProperty的缺点 也是vue3 proxy监听的有点(等下再看)
 # vue2和vue3的区别
-# vue生命周期
+
 
 # 函数式组件比起class组件的优势是什么
 # Vue中是怎么实现订阅者的?Vue中观察者模式和发布/订阅模式的区别和场景  
 
 # 怎样理解VUE中的单向数据流
-# vue父组件和子组件生命周期钩子的执行顺寻
-# 在哪个生命周期钩子里调用异步请求
 # vue3新特性
 # 前端性能的优化
+
+- 使用异步组件 ()=>import(path)
+- 图片懒加载
+
+# vue生命周期
+
+每个Vue的组件实例，从创建到销毁，都有一系列的生命流程，例如数据的绑定，模板的编译，数据的更新引起模板的重新解析，以及销毁。那么生命周期就是一些函数，Vue会在特定的时机去执行这些钩子，用户可以把自己的一些逻辑写在这些函数里面。
+
+生命周期可以分为8个阶段，创建前后，载入前后，更新前后，销毁前后，以及一些特殊常见的钩子(active deactive nexttick).Vue3中新增了三个用于服务端渲染场景。
+
+created/beforeCreated, beforeMoutned/mounted, beforeUpdated/updated, beforeDestord/destoryed->现在改为beforeUnmouned/ unmounted
+
+renderTracked: 调试钩子，响应式依赖被收集时调用
+
+renderTrigger: 调试钩子，响应式依赖被触发时调用
+
+serverPrefetch: 服务器渲染的时候调用(因为beforemounted和mounted在服务器渲染的时候不能用)
+
+![image](../images/00020.png)
+![image](../images/00021.png)
+
+- Vue实例创建完毕的时候 Created
+- 组件渲染到页面的时候，mounted
+- 组件内容发生改变的时候，updated
+- 组件销毁的时候,destoryed
+
+# 在哪个生命周期钩子里调用异步请求
+
+[参考资料](https://blog.csdn.net/m0_56813803/article/details/126106373)
+
+# 什么是SSR
+[参考资料](https://blog.csdn.net/weixin_60364883/article/details/126715457)
+
+SEO: 搜索引擎优化。通过匹配一些关键词，提高页面推荐的准确率
+
+# 动态组件，异步组件
+
+```html
+<!-- 动态组件 -->
+<!-- 通过componnent和is来进行渲染对应的组件 -->
+<!-- 感觉很少用到呀！！！ -->
+<div v-for='item in data' :key=item.id>
+  <componnt :is='item.type'></component>
+</div>
+<对应的组件的名字></对应的组件的名字>
+```
+
+[重要！异步组件()=>import('路径')]([动态组件](https://www.bilibili.com/video/BV1fX4y1G7iT?p=16&vd_source=60248c7c7bc979b113e0ac4403b63220))
+# 父子组件的生命周期执行顺序
+[参考资料](https://blog.csdn.net/weixin_51465106/article/details/125729960)
+
+更新的过程，起始和创建加载的过程是一样的。简单的理解，只有儿子准备好了，渲染好了，父亲才能叫做渲染好了。
+
+# 数据代理
+
+```js
+// 通过Object.defineProperty,obj2可以访问到obj1身上的属性+方法
+let obj = { x: 100 }
+let obj2 = { y: 200 }
+
+Object.defineProperty(obj2, 'x', {
+  get() {
+    return obj.x
+  },
+  set(value) {
+    obj.x = value
+  }
+})
+```
 
 # Vue路径中的@是什么意思
 在Vue-cli中，@是src路径的别名。这样可以简化路径的写法，不用每次都从当前目录出发寻找某个文件.就不用一直写./  ../ 这种
@@ -68,7 +138,7 @@
 
 - computed它的实现原理是基于Object.definePreperty,根据getter,和setter来进行值的改变，是计算属性。watch是监听一个值变化时对应的回调，可以拿到原来的值，和最新的值，可以设置immediate开启首次就执行，还可以通过deep开启深度监听
 - computed只会在页面首次加载的时候，和数据更新的时候执行一次，然后就把值缓存在了内存中。作为对比，通过methods方法，也可以返回计算属性的值，但是methods就得每次遇到计算属性，都要去调用，开销就变高了
-- computed必要要把新值return，所以她不能处理异步的问题。
+- computed必要要把新值return，所以她不能处理异步的问题。这也是和watch不同的地方。
 
 
 # 导航守卫
@@ -176,14 +246,13 @@ console.log(array);
 
 # this.$nexttick使用场景 &nextTick作用，底层实现
 
-- Vue 在修改数据后，视图不会立刻更新，而是等同一事件循环中的所有数据变化完成之后，再统一进行视图更新。改数据是同步代码，带式视图的更新是异步的
-- 1 数据修改
-- 2.数据更新视图的watch进队(重复的不用进去)
-- 3.watch内部，也会调用Nexttick来进行promise封装
-- 4.遇到自己的nexttick
-- 5.watch的异步操作，在自己定义的Nexttick之前，所以就可以解决了
+- Vue是异步更新策略，如果数据发生了变化，Vue不会立即更新DOM，而是开启一个队列，把组件的更新函数保存在队列中，在同一个事件循环中，所有发生的数据的变化会批量地异步更新。这一个策略导致我们对数据地修改，不会马上体现在DOM上，如果此时要获取DOM的状态，就需要使用nextTick。
+- 在Vue的内部，nextTick之所以可以看到DOM更新后的结果，是因为传入的callback会被添加到队列的刷新函数flushScheduleQueue后面，所以DOM更新函数执行完毕了，callback函数自然可以拿到最新的DOM了
 
-[参考资料](https://www.bilibili.com/video/BV1ke4y1D7xv?spm_id_from=333.337.search-card.all.click&vd_source=60248c7c7bc979b113e0ac4403b63220)
+- Vue 在修改数据后，视图不会立刻更新，而是等同一事件循环中的所有数据变化完成之后，再统一进行视图更新。改数据是同步代码，带式视图的更新是异步的
+
+
+[参考资料](https://www.bilibili.com/video/BV1GT4y1674F?spm_id_from=333.337.search-card.all.click&vd_source=60248c7c7bc979b113e0ac4403b63220)
 
 # push和replace区别 应该是路由切换那里的问题
 
@@ -364,7 +433,7 @@ export default {
 
 `7-ref, $children, $parent`
 
-ref获取当前组件元素， children获取儿子，parent可以获取父亲
+ref获取当前组件元素(给组件加上ref, 因为本都是给普通的dom元素加上ref,然后利用this.$refs.XX来获取)， children获取儿子，parent可以获取父亲
 
 `8-作用域插槽`
   
